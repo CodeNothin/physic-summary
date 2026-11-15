@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "physicweb",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "E:/devstuff/PhysicWeb", "run", "dev"],
+      "port": 5173
+    }
+  ]
+}

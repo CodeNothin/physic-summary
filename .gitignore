@@ -1,0 +1,7 @@
+node_modules
+dist
+*.local
+.DS_Store
+
+# personal source material, not part of the shared site
+Source/
