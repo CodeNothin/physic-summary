@@ -37,6 +37,7 @@ export function PointField() {
   const dir = q >= 0 ? 1 : -1;
   // arrow length follows 1/r² (relative to r = 0.1 m), clamped so it stays on screen
   const len = clamp(40 * qn * (0.1 / rM) ** 2, 6, 90);
+  const reach = 18+10*qn
 
   return (
     <WidgetFrame
@@ -59,8 +60,8 @@ export function PointField() {
         ))}
         {Array.from({ length: 8 }, (_, i) => {
           const a = (i * Math.PI) / 4 + Math.PI / 8;
-          const r1 = dir > 0 ? 18 : 46;
-          const r2 = dir > 0 ? 46 : 18;
+          const r1 = dir > 0 ? 18 : reach;
+          const r2 = dir > 0 ? reach : 18;
           return (
             <Arrow
               key={i}
