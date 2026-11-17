@@ -1,3 +1,9 @@
+// =====================================================================
+// Widget: flux through a flat surface in a uniform field, Φ = EA cosθ.
+// Side view: field lines run left → right; the thick line is the surface
+// and the green arrow is its area vector A. Dragging the handle (or the
+// θ slider) tilts the surface; lines that cross it are drawn darker.
+// =====================================================================
 import { useCallback, useState } from 'react';
 import { Arrow, Readout, Slider, WidgetFrame } from '../components/ui';
 import { fmt } from '../lib/format';

@@ -1,0 +1,76 @@
+// =====================================================================
+// The full practice question bank, and the timed exam sets.
+//
+// `generators` = every question type from every chapter. The practice
+// page picks from this list (optionally filtered by chapter or skill).
+// =====================================================================
+import { electricGenerators } from './bankElectric';
+import { magnetismGenerators } from './bankMagnetism';
+import { mulberry32, skillChapter, skillNames } from './common';
+import type { Generator, Problem, Skill } from './common';
+
+export const generators: Generator[] = [...electricGenerators, ...magnetismGenerators];
+
+/** Builds a concrete problem from a generator and a seed (same seed ⇒ same numbers). */
+export function makeProblem(gen: Generator, seed: number): Problem {
+  return { genId: gen.id, skill: gen.skill, title: gen.title, ...gen.make(mulberry32(seed)) };
+}
+
+/** A fresh random seed for a new attempt. */
+export const newSeed = () => (Math.random() * 2 ** 32) >>> 0;
+
+/** Every skill, in the order they are listed on the practice page. */
+export const skills = Object.keys(skillNames) as Skill[];
+
+/** Skills of one chapter (chapter id from src/chapters.ts), or all skills for 'all'. */
+export const skillsOf = (chapter: string): Skill[] =>
+  chapter === 'all' ? skills : skills.filter((s) => skillChapter[s] === chapter);
+
+/**
+ * A timed exam set. Each slot is a list of generator ids; one of them is
+ * chosen at random for that slot, so every exam is different.
+ */
+export interface ExamSet {
+  id: string;
+  label: string;
+  /** chapter ids this set covers (for the practice page's chapter filter) */
+  chapters: string[];
+  minutes: number;
+  slots: string[][];
+}
+
+export const examSets: ExamSet[] = [
+  {
+    id: 'ch12',
+    label: 'บทที่ 1–2 (แนวข้อ 21–25)',
+    chapters: ['gauss', 'potential'],
+    minutes: 20,
+    slots: [
+      ['shell-inner', 'shell-outer'],
+      ['shell-metal-E', 'shell-outside-E'],
+      ['sheets-middle', 'sheets-outside'],
+      ['uniform-VA-VB', 'uniform-VB-VA'],
+      ['uniform-Wext'],
+      ['condV-ratio-out', 'condV-charge'],
+      ['cond-E-out', 'cond-V-out'],
+      ['cond-V-in', 'cond-E-in'],
+      ['ins-in', 'points-V', 'flux-tilt', 'two-ratio', 'ring-V', 'efromv-Ex'],
+    ],
+  },
+  {
+    id: 'ch3',
+    label: 'บทที่ 3 (แนวข้อ 26–27)',
+    chapters: ['magnetism'],
+    minutes: 20,
+    slots: [
+      ['q26-radius'],
+      ['mag-force-angle', 'selector-v', 'selector-E'],
+      ['wire-force', 'semi-straight', 'semi-curved'],
+      ['finite-wire', 'long-wire'],
+      ['thick-in', 'thick-out'],
+      ['solenoid', 'ampere-loop'],
+      ['two-wires-page'],
+      ['q27-Bx', 'q27-By'],
+    ],
+  },
+];

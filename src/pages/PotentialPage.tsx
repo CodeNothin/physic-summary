@@ -1,3 +1,7 @@
+// =====================================================================
+// Chapter 2 page: electric potential (lecture slides + worksheet Q23–25).
+// See MagnetismPage.tsx for a description of the building blocks used here.
+// =====================================================================
 import { Analogy, M, Note, P, Section, Tex, Worked, r } from '../components/ui';
 import { W } from '../widgets/registry';
 
@@ -39,7 +43,8 @@ export function PotentialPage() {
       <Section id="uniform" title="สนามไฟฟ้าสม่ำเสมอ" en="uniform field">
         <P>{r`เมื่อ $\vec E$ เท่ากันทุกจุด อินทิเกรตจะเหลือแค่ dot product กับการกระจัด $\vec S$ (จาก A ไป B)`}</P>
         <M>{r`\Delta V=V_B-V_A=-\vec E\cdot\vec S`}</M>
-        <P>{r`ถ้าเดินระยะ $d$ ตามสนามตรง ๆ จะได้ $\Delta V=-Ed$ ถ้าเดินตั้งฉากกับสนาม $\Delta V=0$`}</P>
+        <P>{r`ถ้าเดินระยะ $d$ ตามสนามตรง ๆ จะได้ $\Delta V=-Ed$ คือ $V_B<V_A$: เส้นสนามชี้ไปทางที่ศักย์ลดลงเสมอ ถ้าเดินตั้งฉากกับสนาม $\Delta V=0$`}</P>
+        <P>{r`พลังงานศักย์ของประจุที่เดินตามสนามระยะ $d$ (สไลด์ 8): $\Delta U=q\,\Delta V=-qEd$ ประจุ **บวก** จึงมี $\Delta U<0$ เหมือนวัตถุตกลงตามแรงโน้มถ่วง`}</P>
         <P>{r`ผิวที่ $V$ เท่ากันทุกจุดเรียกว่า **ผิวสมศักย์** (equipotential surface) มันตั้งฉากกับ $\vec E$ เสมอ เหมือนเส้นชั้นความสูงบนแผนที่ การย้ายประจุไปตามผิวสมศักย์ไม่ต้องทำงาน`}</P>
         <W id="uniform" />
         <Worked title="แบบฝึกหัดข้อ 23 ทีละขั้น">

@@ -1,3 +1,8 @@
+// =====================================================================
+// Widget: charged ring, V and E along its axis.
+// Shows that E_x is minus the slope of the V(x) graph: at the centre V
+// is largest but flat, so E = 0 there.
+// =====================================================================
 import { useState } from 'react';
 import { Graph } from '../components/Graph';
 import { Readout, Slider, WidgetFrame } from '../components/ui';

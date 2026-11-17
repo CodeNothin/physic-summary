@@ -1,3 +1,8 @@
+// =====================================================================
+// Widget: two conducting spheres joined by a wire.
+// Same potential ⇒ q1/q2 = r1/r2 (the big sphere holds more charge),
+// but the surface field E = V/r is stronger on the small sphere.
+// =====================================================================
 import { useState } from 'react';
 import { Arrow, Readout, Slider, WidgetFrame } from '../components/ui';
 import { fmt } from '../lib/format';

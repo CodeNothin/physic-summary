@@ -1,3 +1,11 @@
+// =====================================================================
+// Widget: point-charge sandbox.
+// Up to 6 draggable ±2 nC charges and a probe P. Layers:
+//   colour (canvas)   V on a grid of points: red = high, blue = low
+//   contour lines     equipotentials, found with "marching squares"
+//   arrows            the field direction on a coarse grid
+// Read-outs: V and |E| at P, and the total potential energy (one term per pair).
+// =====================================================================
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Arrow, ChargeDot, Readout, Toggle, WidgetFrame } from '../components/ui';
 import { clamp, fmt } from '../lib/format';

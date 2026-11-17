@@ -1,3 +1,9 @@
+// =====================================================================
+// Widget: two large parallel charged sheets (worksheet Q22).
+// Each sheet's field has size |σ|/2ε0 everywhere and points away from a
+// positive sheet. Rows 1–2 show each sheet alone in the three regions;
+// row 3 is their sum. Values are in units of σ/2ε0.
+// =====================================================================
 import { useState } from 'react';
 import { Arrow, Readout, Slider, WidgetFrame } from '../components/ui';
 import { fmt } from '../lib/format';

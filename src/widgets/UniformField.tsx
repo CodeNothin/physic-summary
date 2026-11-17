@@ -1,3 +1,9 @@
+// =====================================================================
+// Widget: potential difference in a uniform field (worksheet Q23).
+// Drag A and B on a 6 m × 6 m grid (they snap to 0.5 m). Dashed lines are
+// equipotentials every 5 V (V = 0 taken at the origin), always ⟂ to E.
+// Read-outs: S = r_B − r_A, ΔV = −E·S, V_A − V_B and W_ext = qΔV.
+// =====================================================================
 import { useCallback, useState } from 'react';
 import { Arrow, Readout, Slider, WidgetFrame } from '../components/ui';
 import { clamp, fmt, snap } from '../lib/format';

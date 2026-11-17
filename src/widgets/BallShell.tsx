@@ -1,3 +1,8 @@
+// =====================================================================
+// Widget: lecture example — insulating ball (+Q) at the centre of a
+// conducting shell. Slide the Gaussian radius r through the four regions
+// and change the shell's net charge; q_in and E(r) update.
+// =====================================================================
 import { useState } from 'react';
 import { Graph } from '../components/Graph';
 import { Readout, Slider, WidgetFrame } from '../components/ui';

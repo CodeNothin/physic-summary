@@ -1,3 +1,9 @@
+// =====================================================================
+// Widget: hollow conducting sphere with a charge q in the cavity
+// (worksheet Q21: inner radius 10 cm, outer 14 cm). Shows the induced
+// charges inner = −q and outer = Q + q, and E at the chosen radius.
+// In the cavity E is computed as if q sits at the centre.
+// =====================================================================
 import { useState } from 'react';
 import { ChargeDot, Readout, Slider, WidgetFrame } from '../components/ui';
 import { fmt } from '../lib/format';

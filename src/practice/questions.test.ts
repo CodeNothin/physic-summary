@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest';
+// Runs every question generator many times with different seeds and
+// checks that each problem is well-formed and its answer is accepted.
 import { checkAnswer } from '../physics/answers';
-import { examBlueprint, generators, makeProblem, mistakeText, skills } from './bank';
+import { mistakeText } from './common';
+import { examSets, generators, makeProblem, skills } from './questions';
 
 describe('question bank', () => {
   it('has unique ids and covers every skill', () => {
@@ -9,8 +12,9 @@ describe('question bank', () => {
     for (const s of skills) expect(generators.some((g) => g.skill === s)).toBe(true);
   });
 
-  it('exam blueprint only names existing generators', () => {
-    for (const id of examBlueprint.flat()) expect(generators.some((g) => g.id === id)).toBe(true);
+  it('exam sets only name existing generators', () => {
+    for (const set of examSets)
+      for (const id of set.slots.flat()) expect(generators.some((g) => g.id === id)).toBe(true);
   });
 
   for (const gen of generators) {

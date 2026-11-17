@@ -1,3 +1,9 @@
+// =====================================================================
+// Widget: Gauss's law with draggable charges.
+// The dashed outline is a closed (Gaussian) surface. Net flux = q_in / ε0,
+// where q_in only counts charges inside. Each shape is a polygon, so one
+// point-in-polygon test works for the circle, the box and the blob.
+// =====================================================================
 import { useCallback, useState } from 'react';
 import { ChargeDot, Readout, Seg, WidgetFrame } from '../components/ui';
 import { clamp, fmt } from '../lib/format';

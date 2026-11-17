@@ -1,13 +1,26 @@
+// =====================================================================
+// The app shell: top bar, page router and bottom tab bar.
+//
+// ROUTING. The page is chosen by the part of the URL after "#":
+//   #/                     → home (chapter list)
+//   #/learn                → the chapter the user opened last
+//   #/<chapterId>          → a chapter page, e.g. #/gauss
+//   #/<chapterId>/<sec>    → same page, scrolled to that section
+//   #/practice, #/cheat    → practice mode, formula sheet
+//   #/w/<widgetId>         → one widget on its own (handy for testing/sharing)
+// A "#" URL never reloads the page and works on GitHub Pages without
+// any server setup, which is why it is used instead of normal paths.
+// =====================================================================
 import { useEffect, useState } from 'react';
-import { effectiveTheme, setTheme, useStore } from './lib/store';
+import { chapterById, readyChapters } from './chapters';
+import type { SectionInfo } from './chapters';
+import { effectiveTheme, setLastChapter, setTheme, useStore } from './lib/store';
 import { CheatPage } from './pages/CheatPage';
-import { GaussPage, gaussSections } from './pages/GaussPage';
 import { HomePage } from './pages/HomePage';
-import { PotentialPage, potentialSections } from './pages/PotentialPage';
 import { PracticePage } from './practice/PracticePage';
 import { W, widgets } from './widgets/registry';
 
-// Hash routing (#/page/section) so the site works on any GitHub Pages path.
+/** Splits "#/gauss/flux" into ["gauss", "flux"] and re-renders when the hash changes. */
 function useRoute(): string[] {
   const read = () => window.location.hash.replace(/^#\/?/, '').split('/').filter(Boolean);
   const [route, setRoute] = useState(read);
@@ -19,25 +32,21 @@ function useRoute(): string[] {
   return route;
 }
 
-const tabs = [
-  { id: '', ico: '🏠', label: 'หน้าแรก' },
-  { id: 'gauss', ico: '⚡', label: 'เกาส์' },
-  { id: 'potential', ico: '⛰️', label: 'ศักย์ไฟฟ้า' },
-  { id: 'practice', ico: '✏️', label: 'ฝึกโจทย์' },
-  { id: 'cheat', ico: '📋', label: 'สรุปสูตร' },
+/** Bottom tab bar. `match` decides which tab is highlighted for the current page. */
+const tabs: { href: string; ico: string; label: string; match: (page: string) => boolean }[] = [
+  { href: '#/', ico: '🏠', label: 'หน้าแรก', match: (p) => p === '' },
+  { href: '#/learn', ico: '📖', label: 'บทเรียน', match: (p) => p === 'learn' || !!chapterById(p) },
+  { href: '#/practice', ico: '✏️', label: 'ฝึกโจทย์', match: (p) => p === 'practice' },
+  { href: '#/cheat', ico: '📋', label: 'สรุปสูตร', match: (p) => p === 'cheat' },
 ];
 
-function Chips({ page, items }: { page: string; items: { id: string; label: string }[] }) {
+/** The row of section chips at the top of a chapter page (ticked ones turn green). */
+function Chips({ page, items }: { page: string; items: SectionInfo[] }) {
   const done = useStore().done;
   return (
     <nav className="chips" aria-label="หัวข้อในหน้านี้">
       {items.map((s) => (
-        <a
-          key={s.id}
-          className={`chip${done[s.id] ? ' done' : ''}`}
-          href={`#/${page}/${s.id}`}
-          style={{ textDecoration: 'none', color: 'inherit' }}
-        >
+        <a key={s.id} className={`chip${done[s.id] ? ' done' : ''}`} href={`#/${page}/${s.id}`}>
           {done[s.id] ? '✓ ' : ''}
           {s.label}
         </a>
@@ -47,15 +56,25 @@ function Chips({ page, items }: { page: string; items: { id: string; label: stri
 }
 
 export function App() {
-  const [page = '', sub] = useRoute();
+  let [page = '', sub] = useRoute();
   const store = useStore();
   const theme = effectiveTheme(store);
 
+  // "#/learn" means: the last chapter opened, or the first chapter if none yet.
+  if (page === 'learn') page = chapterById(store.lastChapter)?.id ?? readyChapters[0].id;
+  const chapter = chapterById(page);
+
+  // Put the theme on <html data-theme="..."> so styles.css can switch colours.
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
   }, [theme]);
 
-  // scroll to the section named in the hash, or to the top on a page change
+  // Remember the chapter for the "บทเรียน" tab.
+  useEffect(() => {
+    if (chapter?.status === 'ready') setLastChapter(chapter.id);
+  }, [chapter]);
+
+  // Scroll to the section named in the URL, or to the top when the page changes.
   useEffect(() => {
     const el = sub ? document.getElementById(`sec-${sub}`) : null;
     if (el) el.scrollIntoView({ block: 'start' });
@@ -63,29 +82,25 @@ export function App() {
   }, [page, sub]);
 
   let body;
-  if (page === 'gauss') {
+  if (chapter?.Page) {
     body = (
       <>
-        <Chips page="gauss" items={gaussSections} />
-        <GaussPage />
-      </>
-    );
-  } else if (page === 'potential') {
-    body = (
-      <>
-        <Chips page="potential" items={potentialSections} />
-        <PotentialPage />
+        <p className="eyebrow" style={{ marginBottom: 4 }}>
+          บทที่ {chapter.num} · {chapter.en}
+        </p>
+        <Chips page={chapter.id} items={chapter.sections} />
+        <chapter.Page />
       </>
     );
   } else if (page === 'practice') body = <PracticePage />;
   else if (page === 'cheat') body = <CheatPage />;
   else if (page === 'w') {
-    // single-widget view, handy for sharing a link to one widget
+    // single-widget view: a chip per widget, then the chosen one
     body = (
       <>
         <nav className="chips">
           {Object.entries(widgets).map(([id, w]) => (
-            <a key={id} className="chip" href={`#/w/${id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+            <a key={id} className="chip" href={`#/w/${id}`}>
               {w.title}
             </a>
           ))}
@@ -98,7 +113,7 @@ export function App() {
   return (
     <div className="app">
       <header className="topbar">
-        <span className="brand">2304121 · เกาส์ & ศักย์ไฟฟ้า</span>
+        <span className="brand">2304121 · สรุปฟิสิกส์</span>
         <button
           className="icon-btn"
           onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
@@ -110,7 +125,7 @@ export function App() {
       <main>{body}</main>
       <nav className="tabbar" aria-label="เมนูหลัก">
         {tabs.map((t) => (
-          <a key={t.id} href={`#/${t.id}`} className={page === t.id ? 'on' : ''}>
+          <a key={t.href} href={t.href} className={t.match(page) ? 'on' : ''}>
             <span className="ico">{t.ico}</span>
             {t.label}
           </a>

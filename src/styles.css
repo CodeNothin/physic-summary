@@ -12,6 +12,11 @@
   --field: #d97706;
   --gauss: #059669;
   --metal: #b6bfcc;
+  /* chapter 3 colours, matching the slides: B green, v red, F blue, current purple */
+  --bfield: #16a34a;
+  --vel: #dc2626;
+  --force: #0284c7;
+  --cur: #9333ea;
   --good: #15803d;
   --bad: #b91c1c;
   --warn-bg: #fff7e6;
@@ -33,6 +38,10 @@
   --field: #fbbf24;
   --gauss: #34d399;
   --metal: #55627a;
+  --bfield: #4ade80;
+  --vel: #f87171;
+  --force: #38bdf8;
+  --cur: #c084fc;
   --good: #4ade80;
   --bad: #f87171;
   --warn-bg: #2b2413;
@@ -618,3 +627,37 @@ svg text.mut {
   font-size: 0.86rem;
   color: var(--muted);
 }
+
+/* section chips are links: no underline, normal text colour */
+a.chip {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* chapter cards on the home page; "soon" chapters are greyed out */
+.chapter-card {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 2px 12px;
+  align-items: center;
+}
+.chapter-card .ico {
+  grid-row: span 3;
+  font-size: 1.6rem;
+}
+.chapter-card.soon {
+  opacity: 0.5;
+}
+.chapter-card .bar {
+  margin-top: 4px;
+}
+
+/* stroke / fill helpers for the chapter-3 colours (used as cls="bfield" etc. on <Arrow>) */
+.s-bfield { stroke: var(--bfield); }
+.f-bfield { fill: var(--bfield); }
+.s-vel { stroke: var(--vel); }
+.f-vel { fill: var(--vel); }
+.s-force { stroke: var(--force); }
+.f-force { fill: var(--force); }
+.s-cur { stroke: var(--cur); }
+.f-cur { fill: var(--cur); }

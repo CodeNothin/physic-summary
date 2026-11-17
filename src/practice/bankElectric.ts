@@ -1,146 +1,16 @@
-// Question bank: every generator makes a fresh problem from a seed.
-// All answers (and the "known mistake" values) come from the physics module.
+// =====================================================================
+// Practice question generators for chapters 1–2 (Gauss's law, potential).
+// Modelled on worksheet Q21–25 and the lecture examples.
+//
+// Each entry of `electricGenerators` is one question type. Its `make`
+// function picks random numbers with the helpers from common.ts, then
+// returns the prompt, the answer (from src/physics), the known wrong
+// answers (`mistakes`), step-by-step hints and the worked solution.
+// =====================================================================
 import { tex } from '../lib/format';
 import * as P from '../physics';
-import type { KnownMistake } from '../physics/answers';
-
-export type Skill =
-  | 'flux'
-  | 'sphere'
-  | 'sheets'
-  | 'shell'
-  | 'uniform'
-  | 'points'
-  | 'condV'
-  | 'efromv'
-  | 'twoSpheres';
-
-export const skillNames: Record<Skill, string> = {
-  flux: 'ฟลักซ์และกฎของเกาส์',
-  sphere: 'ทรงกลมฉนวน / ตัวนำ (สนาม)',
-  sheets: 'แผ่นประจุ (ข้อ 22)',
-  shell: 'ตัวนำกลวง (ข้อ 21)',
-  uniform: 'สนามสม่ำเสมอ ΔV และงาน (ข้อ 23)',
-  points: 'ศักย์และพลังงานของจุดประจุ',
-  condV: 'ศักย์ของตัวนำทรงกลม (ข้อ 24–25)',
-  efromv: 'หา E จาก V · วงแหวน',
-  twoSpheres: 'ทรงกลมสองลูกต่อลวด',
-};
-
-export interface UnitOpt {
-  label: string;
-  /** multiply the typed number by this to get SI */
-  factor: number;
-}
-
-export interface Problem {
-  genId: string;
-  skill: Skill;
-  title: string;
-  prompt: string;
-  units: UnitOpt[];
-  /** SI */
-  answer: number;
-  /** typical magnitude, used when the answer is exactly 0 */
-  scale: number;
-  mistakes: KnownMistake[];
-  hints: string[];
-  solution: string[];
-}
-
-export interface Generator {
-  id: string;
-  skill: Skill;
-  title: string;
-  make: (rng: Rng) => Omit<Problem, 'genId' | 'skill' | 'title'>;
-}
-
-/** Thai feedback for each known mistake id. */
-export const mistakeText: Record<string, string> = {
-  'inverse-r': 'ดูเหมือนใช้ 1/r ทั้งที่ต้องใช้ 1/r² — สนามคือ kQ/r² (ส่วน kQ/r เป็นสูตรของศักย์)',
-  'inverse-r2': 'ดูเหมือนใช้ 1/r² ทั้งที่ต้องใช้ 1/r — ศักย์คือ kQ/r (ส่วน kQ/r² เป็นสูตรของสนาม)',
-  'used-r-inside': 'ในเนื้อตัวนำ ศักย์เท่ากับที่ผิว ต้องแทนรัศมีทรงกลม R ไม่ใช่ระยะ r',
-  'zero-inside-V': 'E = 0 ไม่ได้แปลว่า V = 0 ในตัวนำ V เท่ากับค่าที่ผิว',
-  'point-inside': 'จุดนี้อยู่ข้างในวัตถุ ใช้สูตรจุดประจุ kQ/r² ตรง ๆ ไม่ได้ เช็กก่อนว่าผิวเกาส์ล้อมประจุเท่าไร',
-  'conductor-inside': 'นี่คือฉนวน ไม่ใช่ตัวนำ ประจุกระจายทั่วเนื้อ ข้างในจึงมีสนาม (q_in = Q r³/a³)',
-  'used-R': 'ต้องแทนระยะ r ของจุดที่ถาม ไม่ใช่รัศมีทรงกลม R',
-  'forgot-cavity': 'ลืมหักประจุที่ผิวใน: q_ผิวนอก = Q_สุทธิ − q_ผิวใน',
-  'outer-sign': 'ผิวในมีประจุ −q ดังนั้นผิวนอก = Q − (−q) = Q + q',
-  'only-Q': 'ผิวเกาส์ข้างนอกล้อมทั้งประจุในโพรงและประจุของตัวนำ: q_in = q + Q',
-  'all-charge': 'จุดนี้อยู่ในเนื้อโลหะ ผิวเกาส์ตรงนี้ล้อมประจุสุทธิเป็นศูนย์',
-  'no-half': 'สนามของแผ่นเดียวคือ σ/2ε₀ (มีเลข 2) ไม่ใช่ σ/ε₀',
-  'wrong-direction': 'ทิศของสนามในบริเวณนี้ผิด ลองวาดลูกศรของแต่ละแผ่นก่อน: ชี้ออกจากแผ่นบวก ชี้เข้าหาแผ่นลบ',
-  'sin-cos': 'ใช้ sin แทน cos — θ คือมุมระหว่าง E กับเวกเตอร์พื้นที่ จึงใช้ cos θ',
-  'no-angle': 'ลืมคูณ cos θ',
-  'outside-field': 'ผิวปิดที่ไม่มีประจุข้างใน ฟลักซ์สุทธิเป็นศูนย์: เส้นสนามที่เข้าเท่ากับที่ออก',
-  'used-k': 'กฎของเกาส์คือ q_in/ε₀ ไม่ใช่ k·q_in',
-  'ratio-inverted': 'อัตราส่วนกลับหัว',
-  'equal-split': 'ประจุไม่ได้แบ่งเท่ากัน แต่แบ่งตามสัดส่วนของรัศมี',
-  'missing-pair': 'ต้องบวกครบทุกคู่ (3 ประจุมี 3 คู่)',
-  'abs-values': 'ต้องเก็บเครื่องหมายของประจุไว้ตอนบวก',
-  'other-component': 'นั่นคือองค์ประกอบอีกแกนหนึ่ง',
-  'no-minus': 'ลืมเครื่องหมายลบ: E = −dV/dx',
-  'ring-distance': 'ระยะที่ต้องใช้คือ √(a²+x²) จากชิ้นประจุบนวงแหวนถึงจุดนั้น ไม่ใช่ x',
-  'ring-as-point': 'วงแหวนไม่ใช่จุดประจุ: ส่วนด้านข้างหักล้างกัน เหลือแต่ส่วนตามแกน E = kQx/(a²+x²)^(3/2)',
-};
-
-// ------------------------------------------------------------- helpers
-
-export type Rng = () => number;
-
-export function mulberry32(seed: number): Rng {
-  let a = seed >>> 0;
-  return () => {
-    a = (a + 0x6d2b79f5) >>> 0;
-    let t = a;
-    t = Math.imul(t ^ (t >>> 15), t | 1);
-    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
-
-const pick = <T,>(rng: Rng, xs: readonly T[]): T => xs[Math.floor(rng() * xs.length)];
-const int = (rng: Rng, lo: number, hi: number) => lo + Math.floor(rng() * (hi - lo + 1));
-const nonzero = (rng: Rng, lo: number, hi: number) => {
-  let v = 0;
-  while (v === 0) v = int(rng, lo, hi);
-  return v;
-};
-const sgn = (x: number) => (x < 0 ? '-' : '+');
-/** "+5.0" / "-20.0" */
-const s1 = (x: number) => `${sgn(x)}${Math.abs(x).toFixed(1)}`;
-const K_TEX = String.raw`9.0\times10^{9}`;
-const E0_TEX = String.raw`8.85\times10^{-12}`;
-const uC = 1e-6;
-const nC = 1e-9;
-
-const U = {
-  field: [{ label: 'N/C', factor: 1 }],
-  volt: [
-    { label: 'V', factor: 1 },
-    { label: 'kV', factor: 1e3 },
-  ],
-  chargeU: [
-    { label: 'μC', factor: 1e-6 },
-    { label: 'nC', factor: 1e-9 },
-    { label: 'C', factor: 1 },
-  ],
-  chargeN: [
-    { label: 'nC', factor: 1e-9 },
-    { label: 'μC', factor: 1e-6 },
-    { label: 'C', factor: 1 },
-  ],
-  energy: [
-    { label: 'J', factor: 1 },
-    { label: 'mJ', factor: 1e-3 },
-    { label: 'μJ', factor: 1e-6 },
-  ],
-  flux: [{ label: 'N·m²/C', factor: 1 }],
-  ratio: [{ label: 'ไม่มีหน่วย', factor: 1 }],
-  timesSigma: [{ label: '× σ/ε₀', factor: 1 }],
-  timesQ: [{ label: '× Q', factor: 1 }],
-  timesV0: [{ label: '× V₀', factor: 1 }],
-} satisfies Record<string, UnitOpt[]>;
+import { E0_TEX, K_TEX, U, int, nC, nonzero, pick, s1, sgn, uC } from './common';
+import type { Generator, Rng } from './common';
 
 const REGION_FIRST = 'เช็กก่อนว่าจุดที่ถามอยู่บริเวณไหน: ในเนื้อโลหะ ในโพรง ในฉนวน หรือข้างนอก';
 
@@ -256,7 +126,7 @@ function polySetup(rng: Rng) {
 
 // ------------------------------------------------------------ generators
 
-export const generators: Generator[] = [
+export const electricGenerators: Generator[] = [
   // ---- Q21: hollow conductor
   {
     id: 'shell-metal-E',
@@ -1155,25 +1025,4 @@ export const generators: Generator[] = [
       };
     },
   },
-];
-
-export function makeProblem(gen: Generator, seed: number): Problem {
-  return { genId: gen.id, skill: gen.skill, title: gen.title, ...gen.make(mulberry32(seed)) };
-}
-
-export const newSeed = () => (Math.random() * 2 ** 32) >>> 0;
-
-export const skills = Object.keys(skillNames) as Skill[];
-
-/** One question per worksheet type (Q21–25) plus lecture examples. */
-export const examBlueprint: string[][] = [
-  ['shell-inner', 'shell-outer'],
-  ['shell-metal-E', 'shell-outside-E'],
-  ['sheets-middle', 'sheets-outside'],
-  ['uniform-VA-VB', 'uniform-VB-VA'],
-  ['uniform-Wext'],
-  ['condV-ratio-out', 'condV-charge'],
-  ['cond-E-out', 'cond-V-out'],
-  ['cond-V-in', 'cond-E-in'],
-  ['ins-in', 'points-V', 'flux-tilt', 'two-ratio', 'ring-V', 'efromv-Ex'],
 ];

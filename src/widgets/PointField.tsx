@@ -1,3 +1,9 @@
+// =====================================================================
+// Widget (chapter 1 warm-up): field of one point charge.
+// Drag P around the charge. The big arrow at P has length ∝ 1/r²
+// (clamped so it stays on screen). The 8 faint arrows around the charge
+// grow with |q| to show that E is proportional to the charge.
+// =====================================================================
 import { useCallback, useState } from 'react';
 import { Arrow, ChargeDot, Readout, Seg, Slider, WidgetFrame } from '../components/ui';
 import { clamp, fmt } from '../lib/format';
@@ -35,9 +41,13 @@ export function PointField() {
   const E = pointFieldMagnitude(q, rM);
   const u = { x: (p.x - C.x) / dpx, y: (p.y - C.y) / dpx };
   const dir = q >= 0 ? 1 : -1;
-  // arrow length follows 1/r² (relative to r = 0.1 m), clamped so it stays on screen
+  // Arrow at P: length = 40 px × qn × (0.1 m / r)², i.e. ∝ q/r².
+  // Clamped to 6–90 px so it never vanishes or leaves the picture.
   const len = clamp(40 * qn * (0.1 / rM) ** 2, 6, 90);
-  const reach = 18+10*qn
+  // The 8 faint arrows around the charge run from 18 px out to `reach`.
+  // Their length (reach − 18 = 10 × qn px) is ∝ q, on the same scale as the
+  // P arrow: 40 × qn × (0.1/0.2)² = 10 × qn px, i.e. the field at r = 0.2 m.
+  const reach = 18 + 10 * qn;
 
   return (
     <WidgetFrame

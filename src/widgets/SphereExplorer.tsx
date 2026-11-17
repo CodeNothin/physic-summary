@@ -1,3 +1,9 @@
+// =====================================================================
+// Widget: charged sphere (R = 10 cm, Q = 4.0 μC — worksheet Q25's numbers).
+// Slide r through the surface and switch conductor / insulator. Shows the
+// Gaussian sphere, which charge it encloses, and the E(r) and V(r) graphs.
+// V inside an insulator is not in the course material, so it is not drawn.
+// =====================================================================
 import { useState } from 'react';
 import { Graph } from '../components/Graph';
 import { Readout, Seg, Slider, WidgetFrame } from '../components/ui';

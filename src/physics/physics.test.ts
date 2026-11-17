@@ -1,3 +1,8 @@
+// =====================================================================
+// Tests for chapters 1–2 physics. The worksheet answers to Q21–25 are the
+// test cases, so if a formula in physics/index.ts is changed by mistake,
+// `npm test` fails and says which worksheet answer no longer matches.
+// =====================================================================
 import { describe, expect, it } from 'vitest';
 import * as P from './index';
 import { checkAnswer, parseAnswer, parseNumber } from './answers';

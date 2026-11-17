@@ -1,3 +1,8 @@
+// =====================================================================
+// Formula sheet ("สรุปสูตร"): one card of formulas per chapter, the list
+// of traps that cost marks, and the Thai–English glossary.
+// Formulas are plain text with $...$ math, so they are easy to edit here.
+// =====================================================================
 import { Li, T, Tex, r } from '../components/ui';
 
 const glossary: [string, string][] = [
@@ -21,6 +26,18 @@ const glossary: [string, string][] = [
   ['สม่ำเสมอ', 'uniform'],
   ['จุดศูนย์กลาง', 'centre'],
   ['ความเร็วคงที่', 'constant speed'],
+  // chapter 3
+  ['สนามแม่เหล็ก', 'magnetic field'],
+  ['แรงแม่เหล็ก', 'magnetic force'],
+  ['ความซาบซึมได้ของสุญญากาศ', 'permeability of free space'],
+  ['กระแสไฟฟ้า', 'electric current'],
+  ['ความหนาแน่นกระแส', 'current density'],
+  ['ลวดตัวนำ', 'conducting wire'],
+  ['ขดลวด / โซลีนอยด์', 'coil / solenoid'],
+  ['จำนวนรอบต่อความยาว', 'turns per unit length'],
+  ['รัศมีความโค้ง', 'radius of curvature'],
+  ['ตั้งฉาก / ขนาน', 'perpendicular / parallel'],
+  ['พุ่งออกจาก / พุ่งเข้ากระดาษ', 'out of / into the page'],
 ];
 
 export function CheatPage() {
@@ -29,8 +46,10 @@ export function CheatPage() {
       <section className="card">
         <h2>สรุปสูตร</h2>
         <p className="small">
-          ค่าคงที่ที่แบบฝึกหัดใช้: <Tex>{r`k=\dfrac{1}{4\pi\varepsilon_0}\approx 9.0\times10^{9}\ \mathrm{N\,m^2/C^2}`}</Tex> และ{' '}
-          <Tex>{r`\varepsilon_0=8.85\times10^{-12}\ \mathrm{C^2/N\,m^2}`}</Tex>
+          ค่าคงที่ที่แบบฝึกหัดใช้: <Tex>{r`k_e=\dfrac{1}{4\pi\varepsilon_0}\approx 9.0\times10^{9}\ \mathrm{N\,m^2/C^2}`}</Tex>,{' '}
+          <Tex>{r`\varepsilon_0=8.85\times10^{-12}\ \mathrm{C^2/N\,m^2}`}</Tex>,{' '}
+          <Tex>{r`\mu_0=4\pi\times10^{-7}\ \mathrm{T\,m/A}`}</Tex> และ <Tex>{r`e=1.60\times10^{-19}\ \mathrm C`}</Tex>{' '}
+          (เว็บนี้เขียน <Tex>k</Tex> แทน <Tex>{r`k_e`}</Tex> ในสไลด์)
         </p>
         <div className="grid2">
           <div>
@@ -60,6 +79,21 @@ export function CheatPage() {
               <Li>{r`สองทรงกลมต่อลวด: $q_1/q_2=r_1/r_2$, $E_1/E_2=r_2/r_1$`}</Li>
             </ul>
           </div>
+          <div>
+            <h3 style={{ marginTop: 0 }}>บิโอต์–ซาวาร์ต และแอมแปร์</h3>
+            <ul>
+              <Li>{r`แรงบนประจุ: $\vec F=q\vec v\times\vec B$, $F=|q|vB\sin\theta$`}</Li>
+              <Li>{r`วงกลมในสนาม: $r=mv/|q|B$, $v=\sqrt{2E_K/m}$`}</Li>
+              <Li>{r`ตัวเลือกความเร็ว: $v=E/B$`}</Li>
+              <Li>{r`แรงบนลวด: $\vec F=I\vec L\times\vec B$; ลวดคดในสนามสม่ำเสมอใช้ $\vec L$ จากปลายถึงปลาย`}</Li>
+              <Li>{r`บิโอต์–ซาวาร์ต: $d\vec B=\dfrac{\mu_0}{4\pi}\dfrac{I\,d\vec s\times\hat r}{r^{2}}$`}</Li>
+              <Li>{r`ลวดตรงยาวจำกัด: $B=\dfrac{\mu_0I}{4\pi a}(\sin\theta_1+\sin\theta_2)$`}</Li>
+              <Li>{r`แอมแปร์: $\oint\vec B\cdot d\vec s=\mu_0I_{in}$`}</Li>
+              <Li>{r`ลวดยาวมาก: $B=\mu_0I/2\pi r$ (ทิศตามกฎกำมือขวา)`}</Li>
+              <Li>{r`ลวดหนา: ข้างใน $B=\mu_0Ir/2\pi R^{2}$ ข้างนอก $\mu_0I/2\pi r$`}</Li>
+              <Li>{r`โซลีนอยด์: $B_{in}=\mu_0nI$, $n=N/\ell$, $B_{out}\approx0$`}</Li>
+            </ul>
+          </div>
         </div>
       </section>
 
@@ -74,6 +108,11 @@ export function CheatPage() {
           <Li>{r`**เครื่องหมายของประจุ** เก็บเครื่องหมายของ $q$ ใน $V$, $U$ และ $W$ ส่วน “ขนาดของสนามไฟฟ้า” ให้ตัดเครื่องหมายแล้วบอกทิศเป็นคำพูด`}</Li>
           <Li>{r`**หน่วย** $\mu\mathrm C=10^{-6}$ C, nC $=10^{-9}$ C, cm $=10^{-2}$ m แปลงก่อนแทนค่าเสมอ`}</Li>
           <Li>{r`**แผ่นประจุบวกกันแบบเวกเตอร์** วาดลูกศรของแต่ละแผ่นในแต่ละบริเวณก่อนค่อยบวก`}</Li>
+          <Li>{r`**ลวดยาว: $1/r$ ไม่ใช่ $1/r^{2}$** สนามของลวดยาวมาก $\mu_0I/2\pi r$ ลดช้ากว่าสนามของจุดประจุ`}</Li>
+          <Li>{r`**MeV ต้องแปลงเป็นจูล** $1\ \mathrm{MeV}=10^{6}\times1.60\times10^{-19}$ J และอย่าลืมเลข 2 ใน $v=\sqrt{2E_K/m}$`}</Li>
+          <Li>{r`**ประจุลบกลับทิศแรง** ใช้กฎมือขวากับ $\vec v\times\vec B$ ก่อน แล้วค่อยกลับทิศถ้า $q<0$`}</Li>
+          <Li>{r`**โซลีนอยด์ใช้ $n$ ไม่ใช่ $N$** $n=N/\ell$ หน่วยรอบต่อเมตร`}</Li>
+          <Li>{r`**ลวดหลายเส้นบวกแบบเวกเตอร์** หาทิศของแต่ละเส้นด้วยกฎกำมือขวาก่อน แล้วค่อยบวกหรือลบ`}</Li>
         </ol>
       </section>
 

@@ -1,3 +1,9 @@
+// =====================================================================
+// A small line graph drawn in SVG, used by widgets for E(r), V(r), B(r)...
+// Give it a function `fn(x)`, the x range, and optionally a marker
+// position (the widget's current value) and dashed guide lines.
+// The y range is chosen automatically and always includes y = 0.
+// =====================================================================
 import { fmt } from '../lib/format';
 
 export interface GraphProps {

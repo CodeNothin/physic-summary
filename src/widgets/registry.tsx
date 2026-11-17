@@ -1,3 +1,8 @@
+// =====================================================================
+// The widget registry: a plain object from id → { title, component }.
+// widgets/all.ts fills it in. <W id="..." /> looks a widget up and shows
+// it, or a grey placeholder if the id is unknown (handy while building).
+// =====================================================================
 import type { ComponentType } from 'react';
 
 export interface WidgetInfo {

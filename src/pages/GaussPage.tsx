@@ -1,3 +1,8 @@
+// =====================================================================
+// Chapter 1 page: Gauss's law (lecture slides + worksheet Q21–22).
+// See MagnetismPage.tsx for a description of the building blocks
+// (<Section>, <P>, <M>, <W>, <Worked>) used in every chapter page.
+// =====================================================================
 import { Analogy, Li, M, Note, P, Section, T, Tex, Worked, r } from '../components/ui';
 import { W } from '../widgets/registry';
 

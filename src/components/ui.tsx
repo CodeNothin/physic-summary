@@ -1,3 +1,14 @@
+// =====================================================================
+// Small building blocks shared by every page and widget:
+//   Tex / M / T       math: inline, display, and text with $...$ inside
+//   P / Li / Note     a paragraph, list item, or yellow note (text may use $...$)
+//   Analogy / Worked  a "picture it like this" box and a fold-out worked example
+//   Section           one card on a chapter page, with the "เข้าใจแล้ว" button
+//   WidgetFrame       the blue box around every widget (title, notice, reset)
+//   Slider / Seg / Toggle / Readout   widget controls and number read-outs
+//   Arrow / ChargeDot / OutIn         SVG drawing helpers
+// Colours come from CSS classes in styles.css (s-<name> = stroke, f-<name> = fill).
+// =====================================================================
 import katex from 'katex';
 import { Fragment, memo } from 'react';
 import type { ReactNode } from 'react';
@@ -28,6 +39,8 @@ export const M = memo(function M({ children }: { children: string }) {
 
 /** Text with inline $math$ and **bold**. */
 export function T({ children }: { children: string }) {
+  // Split the text into pieces: "$...$" (math), "**...**" (bold), and plain text.
+  // The brackets in the pattern keep the matched pieces in the result.
   const bits = children.split(/(\$[^$]+\$|\*\*[^*]+\*\*)/g);
   return (
     <>
@@ -280,6 +293,40 @@ export function ChargeDot({ x, y, q, rad = 11 }: { x: number; y: number; q: numb
       <text x={x} y={y + 4.5} textAnchor="middle" style={{ fill: '#fff', fontWeight: 700, fontSize: 14 }}>
         {q >= 0 ? '+' : '−'}
       </text>
+    </g>
+  );
+}
+
+/**
+ * Field or current pointing straight out of (⊙) or into (⊗) the page.
+ * `out` = true draws a dot (you see the arrow's tip),
+ * `out` = false draws a cross (you see the arrow's tail feathers).
+ * `cls` picks the colour class, e.g. "bfield" or "cur".
+ */
+export function OutIn({
+  x,
+  y,
+  out,
+  size = 7,
+  cls = 'bfield',
+  opacity = 1,
+}: {
+  x: number;
+  y: number;
+  out: boolean;
+  size?: number;
+  cls?: string;
+  opacity?: number;
+}) {
+  const d = size * 0.6;
+  return (
+    <g opacity={opacity}>
+      <circle cx={x} cy={y} r={size} className={`f-none s-${cls}`} strokeWidth={1.5} />
+      {out ? (
+        <circle cx={x} cy={y} r={size * 0.32} className={`f-${cls}`} />
+      ) : (
+        <path d={`M${x - d} ${y - d}L${x + d} ${y + d}M${x + d} ${y - d}L${x - d} ${y + d}`} className={`s-${cls}`} strokeWidth={1.5} />
+      )}
     </g>
   );
 }

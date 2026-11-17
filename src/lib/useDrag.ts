@@ -1,3 +1,11 @@
+// =====================================================================
+// Dragging things inside an SVG with mouse OR finger.
+// It uses "pointer events", which cover both. While a drag is active the
+// element "captures" the pointer, so the drag keeps working even if the
+// finger slides off the small handle. Coordinates handed to `onMove` are
+// in the SVG's own viewBox units, not screen pixels, so widgets don't
+// need to care how big the picture is on the phone.
+// =====================================================================
 import { useCallback, useRef } from 'react';
 import type { PointerEvent as RPointerEvent } from 'react';
 
