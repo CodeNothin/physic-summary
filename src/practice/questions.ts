@@ -9,7 +9,38 @@ import { magnetismGenerators } from './bankMagnetism';
 import { mulberry32, skillChapter, skillNames } from './common';
 import type { Generator, Problem, Skill } from './common';
 
-export const generators: Generator[] = [...electricGenerators, ...magnetismGenerators];
+/**
+ * Which worksheet question each short question is a piece of. The
+ * practice page shows "ส่วนหนึ่งของข้อ N" on these, and the
+ * ตัวอย่างข้อสอบ tab links to them as "ฝึกทีละส่วน".
+ * Generators not listed here come from lecture examples only.
+ */
+const wsOf: Record<string, number> = {
+  'shell-metal-E': 21,
+  'shell-outside-E': 21,
+  'shell-inner': 21,
+  'shell-outer': 21,
+  'sheets-middle': 22,
+  'sheets-outside': 22,
+  'sheets-numeric': 22,
+  'uniform-VA-VB': 23,
+  'uniform-VB-VA': 23,
+  'uniform-Wext': 23,
+  'condV-ratio-out': 24,
+  'condV-charge': 24,
+  'cond-E-out': 25,
+  'cond-V-out': 25,
+  'cond-E-in': 25,
+  'cond-V-in': 25,
+  'q26-radius': 26,
+  'q27-Bx': 27,
+  'q27-By': 27,
+};
+
+export const generators: Generator[] = [...electricGenerators, ...magnetismGenerators].map((g) => ({
+  ...g,
+  ws: wsOf[g.id],
+}));
 
 /** Builds a concrete problem from a generator and a seed (same seed ⇒ same numbers). */
 export function makeProblem(gen: Generator, seed: number): Problem {

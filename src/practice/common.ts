@@ -108,6 +108,8 @@ export interface Generator {
   id: string;
   skill: Skill;
   title: string;
+  /** worksheet question (21–40) this is one piece of; set in questions.ts (`wsOf`) */
+  ws?: number;
   make: (rng: Rng) => Omit<Problem, 'genId' | 'skill' | 'title'>;
 }
 
@@ -141,6 +143,9 @@ export const mistakeText: Record<string, string> = {
   'no-minus': 'ลืมเครื่องหมายลบ: E = −dV/dx',
   'ring-distance': 'ระยะที่ต้องใช้คือ √(a²+x²) จากชิ้นประจุบนวงแหวนถึงจุดนั้น ไม่ใช่ x',
   'ring-as-point': 'วงแหวนไม่ใช่จุดประจุ: ส่วนด้านข้างหักล้างกัน เหลือแต่ส่วนตามแกน E = kQx/(a²+x²)^(3/2)',
+  // worksheet multiple choice (ตัวอย่างข้อสอบ)
+  'used-field-formula': 'นั่นมาจากสูตรสนาม kQ/r² แต่โจทย์ให้ศักย์ ต้องใช้ V = kQ/r',
+  'k-inverted': 'k_e = 1/(4πε₀) ดังนั้น Q = RV₀/k_e = 4πε₀RV₀ (4πε₀ อยู่ด้านบน)',
   // chapter 3
   'mev-not-converted': 'ลืมแปลง MeV เป็นจูล: 1 MeV = 10⁶ × 1.60×10⁻¹⁹ J',
   'no-factor-2': 'จาก E_K = ½mv² ได้ v = √(2E_K/m) อย่าลืมเลข 2',

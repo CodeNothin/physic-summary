@@ -1,9 +1,15 @@
 // =====================================================================
 // Practice mode.
 //
+// Short questions: each one tests ONE step or idea. The full worksheet
+// questions (all parts together) live in the ตัวอย่างข้อสอบ tab
+// (src/worksheet/ExamPage.tsx); short questions that are a piece of a
+// worksheet question say so ("ส่วนหนึ่งของข้อ N").
+//
 // Three screens, chosen by `mode` in PracticePage at the bottom:
 //   menu  — chapter filter, start buttons, accuracy per skill
-//   drill — one question at a time (free practice or one skill),
+//   drill — one question at a time (free practice, one skill, or the
+//           pieces of one worksheet question via #/practice/ws25),
 //           with hints, the answer check and the worked solution
 //   exam  — a timed set with no hints; results shown at the end
 //
@@ -20,12 +26,12 @@ import type { State } from '../lib/store';
 import { checkAnswer, parseNumber } from '../physics/answers';
 import type { Verdict } from '../physics/answers';
 import { mistakeText, skillChapter, skillNames } from './common';
-import type { Problem, Skill } from './common';
+import type { Generator, Problem, Skill } from './common';
 import { examSets, generators, makeProblem, newSeed, skillsOf } from './questions';
 import type { ExamSet } from './questions';
 
 /** A checker verdict, or 'invalid' when the typed text is not a number. */
-type Result = Verdict | { kind: 'invalid' };
+export type Result = Verdict | { kind: 'invalid' };
 
 /** Converts the typed number to SI with the chosen unit, then checks it. */
 function evaluate(p: Problem, text: string, unitIdx: number): Result {
@@ -35,7 +41,7 @@ function evaluate(p: Problem, text: string, unitIdx: number): Result {
 }
 
 /** The Thai message shown under the answer box for each verdict. */
-function feedback(r: Result): string {
+export function feedback(r: Result): string {
   switch (r.kind) {
     case 'correct':
       return 'ถูกต้อง!';
@@ -54,9 +60,12 @@ function feedback(r: Result): string {
 
 const answerText = (p: Problem) => `${fmt(p.answer / p.units[0].factor)} ${p.units[0].label}`;
 
-/** A new random problem from the given skills, avoiding a repeat of the last question type. */
-function randomProblem(allowed: Skill[], avoid?: string): Problem {
-  let pool = generators.filter((g) => allowed.includes(g.skill));
+/** Every short question of the given skills. */
+const gensOf = (skills: Skill[]) => generators.filter((g) => skills.includes(g.skill));
+
+/** A new random problem from `gens`, avoiding a repeat of the last question type. */
+function randomProblem(gens: Generator[], avoid?: string): Problem {
+  let pool = gens;
   if (pool.length > 1 && avoid) pool = pool.filter((g) => g.id !== avoid);
   return makeProblem(pool[Math.floor(Math.random() * pool.length)], newSeed());
 }
@@ -150,8 +159,8 @@ function Solution({ p }: { p: Problem }) {
 
 // ----------------------------------------------------------------- drill
 
-/** One question at a time, drawn from `pool` (a list of skills). */
-function Drill({ pool, onExit, label }: { pool: Skill[]; onExit: () => void; label: string }) {
+/** One question at a time, drawn from `pool` (a list of question generators). */
+function Drill({ pool, onExit, label }: { pool: Generator[]; onExit: () => void; label: string }) {
   const [p, setP] = useState(() => randomProblem(pool));
   const [text, setText] = useState('');
   const [unitIdx, setUnitIdx] = useState(0);
@@ -188,6 +197,7 @@ function Drill({ pool, onExit, label }: { pool: Skill[]; onExit: () => void; lab
   };
 
   const solved = result?.kind === 'correct';
+  const ws = generators.find((g) => g.id === p.genId)?.ws;
 
   return (
     <section className="card">
@@ -200,6 +210,12 @@ function Drill({ pool, onExit, label }: { pool: Skill[]; onExit: () => void; lab
       <h3 style={{ marginTop: 10 }}>{p.title}</h3>
       <p className="small">
         {skillNames[p.skill]} · ทำถูกติดกัน {streak} ข้อ
+        {ws && (
+          <>
+            {' · '}
+            <a href={`#/exam/${ws}`}>ส่วนหนึ่งของข้อ {ws} (ดูโจทย์เต็ม)</a>
+          </>
+        )}
       </p>
       <p>
         <T>{p.prompt}</T>
@@ -408,17 +424,29 @@ function Exam({ set, onExit }: { set: ExamSet; onExit: () => void }) {
 /** Which screen is showing. */
 type Mode =
   | { kind: 'menu' }
-  | { kind: 'drill'; pool: Skill[]; label: string }
+  | { kind: 'drill'; pool: Generator[]; label: string }
   | { kind: 'exam'; set: ExamSet };
 
-export function PracticePage() {
+/** The drill that a URL like #/practice/ws25 asks for, or the menu. */
+function startMode(sub?: string): Mode {
+  const n = Number(sub?.match(/^ws(\d+)$/)?.[1]);
+  const pool = generators.filter((g) => g.ws === n);
+  return pool.length > 0 ? { kind: 'drill', pool, label: `ฝึกทีละส่วนของข้อ ${n}` } : { kind: 'menu' };
+}
+
+/** `sub` is the part of the URL after #/practice/ (e.g. "ws25"), if any. */
+export function PracticePage({ sub }: { sub?: string }) {
   const store = useStore();
-  const [mode, setMode] = useState<Mode>({ kind: 'menu' });
+  const [mode, setMode] = useState<Mode>(() => startMode(sub));
+  const toMenu = () => {
+    setMode({ kind: 'menu' });
+    if (sub) window.location.hash = '#/practice'; // leave #/practice/ws25 so a reload shows the menu
+  };
   // chapter filter for the menu: 'all' or a chapter id from src/chapters.ts
   const [chapter, setChapter] = useState('all');
 
   if (mode.kind === 'drill') {
-    return <Drill key={mode.label} pool={mode.pool} label={mode.label} onExit={() => setMode({ kind: 'menu' })} />;
+    return <Drill key={mode.label} pool={mode.pool} label={mode.label} onExit={toMenu} />;
   }
   if (mode.kind === 'exam') return <Exam set={mode.set} onExit={() => setMode({ kind: 'menu' })} />;
 
@@ -434,9 +462,10 @@ export function PracticePage() {
   return (
     <>
       <section className="card">
-        <h2>ฝึกทำโจทย์</h2>
+        <h2>ฝึกโจทย์สั้น</h2>
         <p>
-          โจทย์แนวเดียวกับแบบฝึกหัดข้อ 21–27 และตัวอย่างในสไลด์ ตัวเลขสุ่มใหม่ทุกครั้ง ใช้{' '}
+          โจทย์สั้นทีละขั้น ตัดมาจากแบบฝึกหัดและตัวอย่างในสไลด์ ตัวเลขสุ่มใหม่ทุกครั้ง (โจทย์เต็มแบบข้อสอบอยู่ในแท็บ{' '}
+          <a href="#/exam">ตัวอย่างข้อสอบ</a>) ใช้{' '}
           <T>{String.raw`$k=9.0\times10^{9}$, $\varepsilon_0=8.85\times10^{-12}$ และ $\mu_0=4\pi\times10^{-7}$`}</T> คำตอบคลาดได้ไม่เกิน 2%
         </p>
         <nav className="chips" aria-label="เลือกบท">
@@ -452,10 +481,10 @@ export function PracticePage() {
           ))}
         </nav>
         <div className="btn-row">
-          <button className="btn" onClick={() => setMode({ kind: 'drill', pool: list, label: `สุ่ม · ${chapterLabel}` })}>
+          <button className="btn" onClick={() => setMode({ kind: 'drill', pool: gensOf(list), label: `สุ่ม · ${chapterLabel}` })}>
             สุ่มโจทย์ ({chapterLabel})
           </button>
-          <button className="btn ghost" onClick={() => setMode({ kind: 'drill', pool: [weak], label: `จุดอ่อน: ${skillNames[weak]}` })}>
+          <button className="btn ghost" onClick={() => setMode({ kind: 'drill', pool: gensOf([weak]), label: `จุดอ่อน: ${skillNames[weak]}` })}>
             ฝึกจุดอ่อน
           </button>
           {sets.map((e) => (
@@ -491,7 +520,7 @@ export function PracticePage() {
                       key={sk}
                       className="skill-row"
                       style={{ width: '100%', background: 'none', border: 0, padding: 0, textAlign: 'left', cursor: 'pointer' }}
-                      onClick={() => setMode({ kind: 'drill', pool: [sk], label: skillNames[sk] })}
+                      onClick={() => setMode({ kind: 'drill', pool: gensOf([sk]), label: skillNames[sk] })}
                     >
                       <span>
                         {skillNames[sk]} {sk === weak && <span className="tag-pill">จุดอ่อน</span>}

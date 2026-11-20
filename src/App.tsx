@@ -6,7 +6,11 @@
 //   #/learn                → the chapter the user opened last
 //   #/<chapterId>          → a chapter page, e.g. #/gauss
 //   #/<chapterId>/<sec>    → same page, scrolled to that section
-//   #/practice, #/cheat    → practice mode, formula sheet
+//   #/practice             → short practice questions
+//   #/practice/ws25        → same, drilling only the pieces of worksheet Q25
+//   #/exam                 → ตัวอย่างข้อสอบ: worksheet Q21–40 in full form
+//   #/exam/25, #/exam/mock → one worksheet question; a 6-question mock exam
+//   #/cheat                → formula sheet (mirrors the official exam sheet)
 //   #/w/<widgetId>         → one widget on its own (handy for testing/sharing)
 // A "#" URL never reloads the page and works on GitHub Pages without
 // any server setup, which is why it is used instead of normal paths.
@@ -18,6 +22,7 @@ import { effectiveTheme, setLastChapter, setTheme, useStore } from './lib/store'
 import { CheatPage } from './pages/CheatPage';
 import { HomePage } from './pages/HomePage';
 import { PracticePage } from './practice/PracticePage';
+import { ExamPage } from './worksheet/ExamPage';
 import { W, widgets } from './widgets/registry';
 
 /** Splits "#/gauss/flux" into ["gauss", "flux"] and re-renders when the hash changes. */
@@ -36,8 +41,9 @@ function useRoute(): string[] {
 const tabs: { href: string; ico: string; label: string; match: (page: string) => boolean }[] = [
   { href: '#/', ico: '🏠', label: 'หน้าแรก', match: (p) => p === '' },
   { href: '#/learn', ico: '📖', label: 'บทเรียน', match: (p) => p === 'learn' || !!chapterById(p) },
-  { href: '#/practice', ico: '✏️', label: 'ฝึกโจทย์', match: (p) => p === 'practice' },
-  { href: '#/cheat', ico: '📋', label: 'สรุปสูตร', match: (p) => p === 'cheat' },
+  { href: '#/practice', ico: '✏️', label: 'ฝึกโจทย์(สั้น)', match: (p) => p === 'practice' },
+  { href: '#/exam', ico: '📝', label: 'ตัวอย่างข้อสอบ', match: (p) => p === 'exam' },
+  { href: '#/cheat', ico: '📋', label: 'สูตร', match: (p) => p === 'cheat' },
 ];
 
 /** The row of section chips at the top of a chapter page (ticked ones turn green). */
@@ -92,7 +98,8 @@ export function App() {
         <chapter.Page />
       </>
     );
-  } else if (page === 'practice') body = <PracticePage />;
+  } else if (page === 'practice') body = <PracticePage key={sub ?? ''} sub={sub} />;
+  else if (page === 'exam') body = <ExamPage sub={sub} />;
   else if (page === 'cheat') body = <CheatPage />;
   else if (page === 'w') {
     // single-widget view: a chip per widget, then the chosen one

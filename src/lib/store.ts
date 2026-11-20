@@ -29,8 +29,27 @@ export interface ExamResult {
   score: number;
   total: number;
   seconds: number;
-  /** which exam set (see `examSets` in practice/bank.ts); missing on old saves */
+  /** which exam set (see `examSets` in practice/questions.ts); missing on old saves */
   set?: string;
+}
+
+/** Progress on one worksheet question in the "ตัวอย่างข้อสอบ" tab. */
+export interface WsStat {
+  /** how many times it was checked or submitted (first check of each set of numbers) */
+  tries: number;
+  /** how many of those were fully right with no hints and no solution opened */
+  clean: number;
+}
+
+/** One finished mock exam (6 worksheet questions). */
+export interface MockResult {
+  at: number;
+  /** answer boxes right / all answer boxes */
+  score: number;
+  total: number;
+  seconds: number;
+  /** which worksheet questions were in it */
+  questions: number[];
 }
 
 export interface State {
@@ -44,11 +63,15 @@ export interface State {
   exams: ExamResult[];
   /** chapter id the user last opened, for the "บทเรียน" tab */
   lastChapter: string | null;
+  /** worksheet question number (as text, "21") → progress */
+  ws: Record<string, WsStat>;
+  /** last 20 mock exams */
+  mocks: MockResult[];
 }
 
 /** Bump the version number only if the shape changes in a way old data can't fill. */
 const KEY = 'physicweb:v1';
-const empty: State = { theme: null, done: {}, skills: {}, exams: [], lastChapter: null };
+const empty: State = { theme: null, done: {}, skills: {}, exams: [], lastChapter: null, ws: {}, mocks: [] };
 
 function load(): State {
   try {
@@ -108,6 +131,17 @@ export const recordAttempt = (skill: string, correct: boolean) =>
 /** Save a finished exam, keeping only the last 20. */
 export const recordExam = (r: ExamResult) =>
   update((s) => ({ ...s, exams: [...s.exams, r].slice(-20) }));
+
+/** Count one try at a worksheet question; `clean` = all right, no hints, no solution. */
+export const recordWs = (q: number, clean: boolean) =>
+  update((s) => {
+    const cur = s.ws[q] ?? { tries: 0, clean: 0 };
+    return { ...s, ws: { ...s.ws, [q]: { tries: cur.tries + 1, clean: cur.clean + (clean ? 1 : 0) } } };
+  });
+
+/** Save a finished mock exam, keeping only the last 20. */
+export const recordMock = (r: MockResult) =>
+  update((s) => ({ ...s, mocks: [...s.mocks, r].slice(-20) }));
 
 /** Wipe progress but keep the chosen theme. */
 export const resetProgress = () => update((s) => ({ ...empty, theme: s.theme }));

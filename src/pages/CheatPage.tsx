@@ -1,9 +1,11 @@
 // =====================================================================
-// Formula sheet ("สรุปสูตร"): one card of formulas per chapter, the list
-// of traps that cost marks, and the Thai–English glossary.
+// The "สูตร" tab. The exam hands out an official formula sheet, so this
+// page shows (1) its constants and (2) its formulas as printed, then
+// (3) what the lessons use that is NOT on the sheet, (4) the traps that
+// cost marks and (5) a Thai–English glossary.
 // Formulas are plain text with $...$ math, so they are easy to edit here.
 // =====================================================================
-import { Li, T, Tex, r } from '../components/ui';
+import { Li, M, T, Tex, r } from '../components/ui';
 
 const glossary: [string, string][] = [
   ['สนามไฟฟ้า', 'electric field'],
@@ -40,61 +42,147 @@ const glossary: [string, string][] = [
   ['พุ่งออกจาก / พุ่งเข้ากระดาษ', 'out of / into the page'],
 ];
 
+/**
+ * The official exam sheet ("ค่าคงที่และสูตรทางคณิตศาสตร์ ปลายภาค"), copied
+ * as printed. Only the chapters that have lessons are listed; add the
+ * next block from the sheet when a chapter is built.
+ */
+const sheetBlocks: { title: string; formulas: string[] }[] = [
+  {
+    title: "Electric Field and Gauss's Law",
+    formulas: [
+      r`\vec F_{12}=k_e\dfrac{q_1q_2}{r^2}\hat r_{12}\qquad \vec F=q\vec E`,
+      r`\vec E=k_e\dfrac{q}{r^2}\hat r\qquad \vec E=k_e\int\dfrac{dq}{r^2}\hat r`,
+      r`\Phi_E=\oint\vec E\cdot d\vec A=\dfrac{q_{in}}{\varepsilon_0}`,
+    ],
+  },
+  {
+    title: 'Electric Potential',
+    formulas: [
+      r`\Delta U=-q_0\int_A^B\vec E\cdot d\vec s\qquad \Delta V=\dfrac{\Delta U}{q_0}=-\int_A^B\vec E\cdot d\vec s`,
+      r`W_{ext}=q\Delta V`,
+      r`V=k_e\dfrac{q}{r}\qquad V=k_e\int\dfrac{dq}{r}\qquad U=k_e\dfrac{q_1q_2}{r_{12}}`,
+      r`\vec E=-\left(\hat i\dfrac{\partial V}{\partial x}+\hat j\dfrac{\partial V}{\partial y}+\hat k\dfrac{\partial V}{\partial z}\right)`,
+    ],
+  },
+  {
+    title: 'Magnetic Field',
+    formulas: [
+      r`\vec F_B=q\vec v\times\vec B\qquad d\vec F_B=I\,d\vec s\times\vec B\qquad \vec F_B=I\vec\ell\times\vec B`,
+      r`\vec B=\dfrac{\mu_0I}{4\pi}\int\dfrac{d\vec s\times\hat r}{r^2}\qquad \oint\vec B\cdot d\vec s=\mu_0I_{\text{enclosed}}`,
+      r`\text{ลวดตรงยาวมาก: }B=\dfrac{\mu_0I}{2\pi a}\qquad \text{Solenoid: }B_{in}=\mu_0nI,\ B_{out}\approx0`,
+    ],
+  },
+  {
+    title: 'คณิตศาสตร์ที่ให้ (ใช้กับลวดยาวจำกัด วงแหวน ฯลฯ)',
+    formulas: [
+      r`\int\dfrac{dx}{x^2+a^2}=\dfrac1a\tan^{-1}\!\left(\dfrac xa\right)\qquad \int\dfrac{x\,dx}{x^2+a^2}=\dfrac12\ln(x^2+a^2)`,
+      r`\int\dfrac{dx}{\sqrt{x^2+a^2}}=\ln\!\left(x+\sqrt{x^2+a^2}\right)\qquad \int\dfrac{x\,dx}{\sqrt{x^2+a^2}}=\sqrt{x^2+a^2}`,
+      r`\int\dfrac{dx}{(x^2+a^2)^{3/2}}=\dfrac{x}{a^2\sqrt{x^2+a^2}}\qquad \int\dfrac{x\,dx}{(x^2+a^2)^{3/2}}=\dfrac{-1}{\sqrt{x^2+a^2}}`,
+      r`\int\sin(ax)\,dx=-\dfrac1a\cos(ax)\qquad \int\cos(ax)\,dx=\dfrac1a\sin(ax)`,
+      r`\int\dfrac{dx}{a+bx}=\dfrac1b\ln(a+bx)\qquad \int\dfrac{dx}{x}=\ln|x|\qquad \int x^n\,dx=\dfrac{x^{n+1}}{n+1}`,
+    ],
+  },
+];
+
+/**
+ * Results the lessons and worksheet use that are NOT printed on the exam
+ * sheet, with where each comes from. Grouped by chapter.
+ */
+const notOnSheet: { chapter: string; items: string[] }[] = [
+  {
+    chapter: 'บทที่ 1 กฎของเกาส์',
+    items: [
+      r`ในเนื้อตัวนำ $E=0$ และประจุอยู่ที่ผิว (หลักการ)`,
+      r`ตัวนำกลวง: $q_{\text{ผิวใน}}=-q_{\text{โพรง}}$, $q_{\text{ผิวนอก}}=Q_{\text{สุทธิ}}-q_{\text{ผิวใน}}$ (ผิวเกาส์ในเนื้อโลหะ)`,
+      r`แผ่นประจุใหญ่มาก: $E=\sigma/2\varepsilon_0$ (ผิวเกาส์ทรงกระบอก) แล้วรวมหลายแผ่นแบบเวกเตอร์`,
+      r`นอกทรงกลมใด ๆ: $E=k_eQ/r^2$ เหมือนจุดประจุ (ผิวเกาส์ทรงกลม)`,
+      r`ในฉนวนทรงกลมประจุสม่ำเสมอ: $q_{in}=Qr^3/a^3$ จึงได้ $E=k_eQr/a^3$`,
+      r`ฟลักซ์ผ่านพื้นที่เรียบในสนามสม่ำเสมอ: $\Phi_E=EA\cos\theta$`,
+      r`วงแหวนบนแกน: $E_x=k_eQx/(a^2+x^2)^{3/2}$ (จาก $k_e\int dq/r^2$ ส่วนด้านข้างหักล้างกัน)`,
+    ],
+  },
+  {
+    chapter: 'บทที่ 2 ศักย์ไฟฟ้า',
+    items: [
+      r`สนามสม่ำเสมอ: $\Delta V=-\vec E\cdot(\vec r_B-\vec r_A)$ (ดึง $\vec E$ ออกนอกอินทิกรัล)`,
+      r`งานของสนาม $W_{field}=-q\Delta V$ (ตรงข้ามกับ $W_{ext}$)`,
+      r`ตัวนำทรงกลม: ข้างใน $V=k_eQ/R$ (เท่าที่ผิว) ข้างนอก $k_eQ/r$`,
+      r`$k_e=\dfrac{1}{4\pi\varepsilon_0}$ (ชีทให้แค่ตัวเลข $9\times10^9$) ใช้ตอนตอบเป็นตัวแปร เช่น $Q=4\pi\varepsilon_0RV_0$`,
+      r`ทรงกลมสองลูกต่อลวด: $V$ เท่ากัน จึงได้ $q_1/q_2=r_1/r_2$`,
+      r`วงแหวน: $V=k_eQ/\sqrt{a^2+x^2}$ (จาก $k_e\int dq/r$)`,
+    ],
+  },
+  {
+    chapter: 'บทที่ 3 บิโอต์–ซาวาร์ต และแอมแปร์',
+    items: [
+      r`วงกลมในสนามแม่เหล็ก: $qvB=mv^2/r$ จึงได้ $r=mv/qB$ และ $E_K=\tfrac12mv^2$ (ฟิสิกส์ ม.ปลาย)`,
+      r`ตัวเลือกความเร็ว: $qE=qvB$ จึงได้ $v=E/B$`,
+      r`ขนาดของ cross product: $F=qvB\sin\theta$, $F=I\ell B\sin\theta$`,
+      r`ลวดคดในสนามสม่ำเสมอ: แรงเท่ากับลวดตรงที่ต่อปลายถึงปลาย`,
+      r`ลวดตรงยาวจำกัด: $B=\dfrac{\mu_0I}{4\pi a}(\sin\theta_1+\sin\theta_2)$ (บิโอต์–ซาวาร์ต กับอินทิกรัล $(x^2+a^2)^{-3/2}$ ในชีท)`,
+      r`ลวดหนา (กระแสสม่ำเสมอ): ข้างใน $B=\mu_0Ir/2\pi R^2$ (จากแอมแปร์ $I_{in}=Ir^2/R^2$)`,
+      r`โซลีนอยด์: $n=N/\ell$ คือรอบต่อเมตร`,
+      r`ทิศของ $\vec B$ รอบลวด: กฎมือขวา (หรือ ทิศกระแส × ทิศจากลวดไปยังจุด)`,
+    ],
+  },
+];
+
 export function CheatPage() {
   return (
     <>
       <section className="card">
-        <h2>สรุปสูตร</h2>
-        <p className="small">
-          ค่าคงที่ที่แบบฝึกหัดใช้: <Tex>{r`k_e=\dfrac{1}{4\pi\varepsilon_0}\approx 9.0\times10^{9}\ \mathrm{N\,m^2/C^2}`}</Tex>,{' '}
-          <Tex>{r`\varepsilon_0=8.85\times10^{-12}\ \mathrm{C^2/N\,m^2}`}</Tex>,{' '}
-          <Tex>{r`\mu_0=4\pi\times10^{-7}\ \mathrm{T\,m/A}`}</Tex> และ <Tex>{r`e=1.60\times10^{-19}\ \mathrm C`}</Tex>{' '}
-          (เว็บนี้เขียน <Tex>k</Tex> แทน <Tex>{r`k_e`}</Tex> ในสไลด์)
+        <h2>สูตร</h2>
+        <p>
+          ในห้องสอบมีชีท <b>“ค่าคงที่และสูตรทางคณิตศาสตร์”</b> ให้ จึงไม่ต้องท่องสูตรในชีท หน้านี้คัดสูตรในชีทมาตามที่พิมพ์จริง (เฉพาะบทที่มีบทเรียนแล้ว)
+          แล้วตามด้วยสิ่งที่ <b>ไม่อยู่ในชีท</b> ซึ่งต้องหาเองหรือเข้าใจเอง
         </p>
-        <div className="grid2">
-          <div>
-            <h3 style={{ marginTop: 0 }}>กฎของเกาส์</h3>
+        <p className="small">เว็บนี้เขียน <Tex>k</Tex> แทน <Tex>{r`k_e`}</Tex> ในชีทและสไลด์</p>
+      </section>
+
+      <section className="card">
+        <h2>ค่าคงที่ (ตามชีท)</h2>
+        <ul>
+          <Li>{r`$k_e=9\times10^{9}\ \mathrm{N\,m^2/C^2}$`}</Li>
+          <Li>{r`$\varepsilon_0=8.85\times10^{-12}\ \mathrm{C^2/(N\,m^2)}$`}</Li>
+          <Li>{r`$\mu_0=4\pi\times10^{-7}\ \mathrm{T\,m/A}$`}</Li>
+          <Li>{r`$e=1.60\times10^{-19}$ C และ $1\ \mathrm{eV}=1.6\times10^{-19}$ J`}</Li>
+          <Li>{r`$m_p=1.67\times10^{-27}$ kg และ $m_e=9.1\times10^{-31}$ kg`}</Li>
+          <Li>{r`$1\,\mathrm u=1.66054\times10^{-27}$ kg $=931.50\ \mathrm{MeV}/c^2$`}</Li>
+          <Li>{r`$h=6.63\times10^{-34}$ J·s และ $c=3\times10^{8}$ m/s`}</Li>
+          <Li>{r`$g=9.8\ \mathrm{m/s^2}$ และ $N_A=6.02\times10^{23}$ ต่อ mol`}</Li>
+          <Li>{r`1 atm $=1.01\times10^{5}\ \mathrm{N/m^2}$, 1 fm $=10^{-15}$ m, 1 Ci $=3.70\times10^{10}$ Bq`}</Li>
+        </ul>
+        <p className="note">
+          <T>{r`ถ้าโจทย์ให้ค่าเอง ให้ใช้ค่าในโจทย์ เช่น ข้อ 26 ให้มวลโปรตอน $1.66\times10^{-27}$ kg ไม่ใช่ $m_p=1.67\times10^{-27}$ ในชีท`}</T>
+        </p>
+      </section>
+
+      <section className="card">
+        <h2>สูตรในชีท บทที่ 1–3</h2>
+        {sheetBlocks.map((b) => (
+          <div key={b.title}>
+            <h3>{b.title}</h3>
+            {b.formulas.map((f) => (
+              <M key={f}>{f}</M>
+            ))}
+          </div>
+        ))}
+      </section>
+
+      <section className="card">
+        <h2>ไม่อยู่ในชีท ต้องหาเองหรือเข้าใจเอง</h2>
+        <p className="small">แต่ละข้อบอกว่าหามาจากอะไร ส่วนใหญ่ได้จากสูตรในชีทบวกผิวเกาส์หรือวงแอมแปร์ที่เลือกดี ๆ</p>
+        {notOnSheet.map((g) => (
+          <div key={g.chapter}>
+            <h3>{g.chapter}</h3>
             <ul>
-              <Li>{r`ฟลักซ์: $\Phi_E=EA\cos\theta$`}</Li>
-              <Li>{r`กฎ: $\oint\vec E\cdot d\vec A=q_{in}/\varepsilon_0$`}</Li>
-              <Li>{r`จุดประจุ หรือนอกทรงกลมใด ๆ: $E=kQ/r^{2}$`}</Li>
-              <Li>{r`ในฉนวนทรงกลมประจุสม่ำเสมอ: $E=kQr/a^{3}$`}</Li>
-              <Li>{r`แผ่นประจุใหญ่มาก: $E=\sigma/2\varepsilon_0$`}</Li>
-              <Li>{r`ในเนื้อโลหะ: $E=0$`}</Li>
-              <Li>{r`โพรง: $q_{\text{ผิวใน}}=-q_{\text{โพรง}}$, $q_{\text{ผิวนอก}}=Q_{\text{สุทธิ}}-q_{\text{ผิวใน}}$`}</Li>
-              <Li>{r`วงแหวนบนแกน: $E_x=kQx/(a^{2}+x^{2})^{3/2}$`}</Li>
+              {g.items.map((t) => (
+                <Li key={t}>{t}</Li>
+              ))}
             </ul>
           </div>
-          <div>
-            <h3 style={{ marginTop: 0 }}>ศักย์ไฟฟ้า</h3>
-            <ul>
-              <Li>{r`$\Delta V=-\int\vec E\cdot d\vec s$ ; สนามสม่ำเสมอ: $-\vec E\cdot\vec S$`}</Li>
-              <Li>{r`$U=qV$, $W_{ext}=q\Delta V$, $W_{int}=-q\Delta V$`}</Li>
-              <Li>{r`จุดประจุ: $V=kq/r$`}</Li>
-              <Li>{r`พลังงานของคู่ประจุ: $U=kq_1q_2/r_{12}$ บวกทุกคู่`}</Li>
-              <Li>{r`$E_x=-dV/dx$`}</Li>
-              <Li>{r`วงแหวน: $V=kQ/\sqrt{a^{2}+x^{2}}$`}</Li>
-              <Li>{r`จาน: $V=2\pi k\sigma[\sqrt{R^{2}+x^{2}}-x]$`}</Li>
-              <Li>{r`ตัวนำทรงกลม: ข้างใน $V=kQ/R$ ข้างนอก $kQ/r$`}</Li>
-              <Li>{r`สองทรงกลมต่อลวด: $q_1/q_2=r_1/r_2$, $E_1/E_2=r_2/r_1$`}</Li>
-            </ul>
-          </div>
-          <div>
-            <h3 style={{ marginTop: 0 }}>บิโอต์–ซาวาร์ต และแอมแปร์</h3>
-            <ul>
-              <Li>{r`แรงบนประจุ: $\vec F=q\vec v\times\vec B$, $F=|q|vB\sin\theta$`}</Li>
-              <Li>{r`วงกลมในสนาม: $r=mv/|q|B$, $v=\sqrt{2E_K/m}$`}</Li>
-              <Li>{r`ตัวเลือกความเร็ว: $v=E/B$`}</Li>
-              <Li>{r`แรงบนลวด: $\vec F=I\vec L\times\vec B$; ลวดคดในสนามสม่ำเสมอใช้ $\vec L$ จากปลายถึงปลาย`}</Li>
-              <Li>{r`บิโอต์–ซาวาร์ต: $d\vec B=\dfrac{\mu_0}{4\pi}\dfrac{I\,d\vec s\times\hat r}{r^{2}}$`}</Li>
-              <Li>{r`ลวดตรงยาวจำกัด: $B=\dfrac{\mu_0I}{4\pi a}(\sin\theta_1+\sin\theta_2)$`}</Li>
-              <Li>{r`แอมแปร์: $\oint\vec B\cdot d\vec s=\mu_0I_{in}$`}</Li>
-              <Li>{r`ลวดยาวมาก: $B=\mu_0I/2\pi r$ (ทิศตามกฎกำมือขวา)`}</Li>
-              <Li>{r`ลวดหนา: ข้างใน $B=\mu_0Ir/2\pi R^{2}$ ข้างนอก $\mu_0I/2\pi r$`}</Li>
-              <Li>{r`โซลีนอยด์: $B_{in}=\mu_0nI$, $n=N/\ell$, $B_{out}\approx0$`}</Li>
-            </ul>
-          </div>
-        </div>
+        ))}
       </section>
 
       <section className="card">
