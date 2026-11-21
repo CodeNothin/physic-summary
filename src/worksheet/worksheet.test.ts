@@ -61,6 +61,28 @@ describe('worksheet answer key (original numbers)', () => {
     expect(checkBox(b[0], { text: '2.3', unitIdx: 0, choice: null }).kind).toBe('correct');
     expect(checkBox(b[1], { text: '1.4', unitIdx: 0, choice: null }).kind).toBe('correct');
   });
+  it('Q29: I = 0.0995 W/m² (0.10); U = 23.9 J (24)', () => {
+    near(num(29, 0), 0.0995, 0.01);
+    near(num(29, 1), 23.87, 0.01);
+    const b = boxes(29);
+    expect(checkBox(b[0], { text: '0.10', unitIdx: 0, choice: null }).kind).toBe('correct');
+    expect(checkBox(b[1], { text: '24', unitIdx: 0, choice: null }).kind).toBe('correct');
+  });
+  it('Q30: B_max = 6.7×10⁻³ T along +ŷ; f = 5.7×10¹⁴ Hz', () => {
+    near(num(30, 0), 6.667e-3);
+    const dir = boxes(30)[1];
+    expect(dir.kind).toBe('choice');
+    if (dir.kind === 'choice') expect(dir.options[dir.correctIndex!].tex).toBe(String.raw`\hat B=+\hat y`);
+    near(num(30, 2), 5.73e14);
+    expect(checkBox(boxes(30)[0], { text: '6.7e-3', unitIdx: 0, choice: null }).kind).toBe('correct');
+    expect(checkBox(boxes(30)[2], { text: '5.7e14', unitIdx: 0, choice: null }).kind).toBe('correct');
+  });
+  it('Q30: the four direction options are always different', () => {
+    for (let s = 1; s <= 100; s++) {
+      const b = questionByNumber(30)!.make(s * 31).parts[0].boxes[1];
+      if (b.kind === 'choice') expect(new Set(b.options.map((o) => o.tex)).size).toBe(4);
+    }
+  });
 });
 
 describe('worksheet list', () => {

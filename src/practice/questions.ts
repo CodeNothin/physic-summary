@@ -5,6 +5,7 @@
 // page picks from this list (optionally filtered by chapter or skill).
 // =====================================================================
 import { electricGenerators } from './bankElectric';
+import { emwaveGenerators } from './bankEmwave';
 import { faradayGenerators } from './bankFaraday';
 import { magnetismGenerators } from './bankMagnetism';
 import { mulberry32, skillChapter, skillNames } from './common';
@@ -39,9 +40,14 @@ const wsOf: Record<string, number> = {
   'q28-imax': 28,
   'q28-current': 28,
   'rl-tau': 28,
+  'q29-intensity': 29,
+  'q29-energy': 29,
+  'q30-Bmax': 30,
+  'q30-freq': 30,
+  'wave-lambda': 30,
 };
 
-export const generators: Generator[] = [...electricGenerators, ...magnetismGenerators, ...faradayGenerators].map((g) => ({
+export const generators: Generator[] = [...electricGenerators, ...magnetismGenerators, ...faradayGenerators, ...emwaveGenerators].map((g) => ({
   ...g,
   ws: wsOf[g.id],
 }));
@@ -121,6 +127,21 @@ export const examSets: ExamSet[] = [
       ['q28-current'],
       ['rl-decay', 'rl-VL'],
       ['rl-time-fraction', 'rl-design-L'],
+    ],
+  },
+  {
+    id: 'ch5',
+    label: 'บทที่ 5 (แนวข้อ 29–30)',
+    chapters: ['emwave'],
+    minutes: 15,
+    slots: [
+      ['q29-intensity', 'hemisphere-intensity'],
+      ['q29-energy'],
+      ['q30-Bmax', 'wave-Emax-from-B'],
+      ['q30-freq', 'wave-lambda', 'lc-wavelength'],
+      ['intensity-from-E', 'emax-from-intensity', 'emax-at-distance'],
+      ['pressure-absorb-reflect', 'pressure-partial', 'sail-force'],
+      ['power-from-pressure', 'force-planet', 'momentum-oblique', 'displacement-current'],
     ],
   },
 ];

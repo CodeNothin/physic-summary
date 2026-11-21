@@ -43,6 +43,13 @@ import { RailRod } from './RailRod';
 import { LoopRegion } from './LoopRegion';
 import { RLCircuit } from './RLCircuit';
 
+// ---- chapter 5: electromagnetic waves
+import { EMWave } from './EMWave';
+import { EBDirection } from './EBDirection';
+import { Spectrum } from './Spectrum';
+import { Intensity } from './Intensity';
+import { RadPressure } from './RadPressure';
+
 widgets.pointField = { title: 'สนามของจุดประจุ', C: PointField };
 widgets.flux = { title: 'ฟลักซ์', C: FluxTilt };
 widgets.gauss = { title: 'กฎของเกาส์', C: GaussCharges };
@@ -71,3 +78,9 @@ widgets.lenz = { title: 'กฎของเลนซ์', C: LenzMagnet };
 widgets.railRod = { title: 'แท่งบนราง', C: RailRod };
 widgets.loopRegion = { title: 'ขดลวดผ่านสนาม (สไลด์ 13)', C: LoopRegion };
 widgets.rl = { title: 'วงจร RL', C: RLCircuit };
+
+widgets.emWave = { title: 'คลื่น EM ระนาบ', C: EMWave };
+widgets.ebDir = { title: 'ทิศของ B ในคลื่น EM (ข้อ 30)', C: EBDirection };
+widgets.spectrum = { title: 'สเปกตรัม', C: Spectrum };
+widgets.intensity = { title: 'ความเข้มที่ระยะ r (ข้อ 29)', C: Intensity };
+widgets.radPressure = { title: 'ความดันรังสี', C: RadPressure };

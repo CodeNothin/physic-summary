@@ -6,6 +6,7 @@
 //   bankElectric.ts   question generators for chapters 1–2
 //   bankMagnetism.ts  question generators for chapter 3
 //   bankFaraday.ts    question generators for chapter 4
+//   bankEmwave.ts     question generators for chapter 5
 //   questions.ts      joins them, and defines the timed exam sets
 //
 // A "generator" is a recipe that, given a random-number source, makes
@@ -41,7 +42,11 @@ export type Skill =
   // chapter 4
   | 'faradayFlux'
   | 'motional'
-  | 'rl';
+  | 'rl'
+  // chapter 5
+  | 'emWave'
+  | 'emIntensity'
+  | 'radPressure';
 
 export const skillNames: Record<Skill, string> = {
   flux: 'ฟลักซ์และกฎของเกาส์',
@@ -61,6 +66,9 @@ export const skillNames: Record<Skill, string> = {
   faradayFlux: 'ฟลักซ์แม่เหล็ก · กฎของฟาราเดย์',
   motional: 'emf จากการเคลื่อนที่ Bℓv · ขดลวดผ่านสนาม',
   rl: 'วงจร RL (ข้อ 28)',
+  emWave: 'คลื่นระนาบ E/B = c · λ และ f (ข้อ 30)',
+  emIntensity: 'ความเข้มและพลังงานของคลื่น (ข้อ 29)',
+  radPressure: 'ความดันรังสีและโมเมนตัม',
 };
 
 /** Which chapter (by id in src/chapters.ts) each skill belongs to. */
@@ -82,6 +90,9 @@ export const skillChapter: Record<Skill, string> = {
   faradayFlux: 'faraday',
   motional: 'faraday',
   rl: 'faraday',
+  emWave: 'emwave',
+  emIntensity: 'emwave',
+  radPressure: 'emwave',
 };
 
 // ------------------------------------------------------------ types
@@ -188,6 +199,28 @@ export const mistakeText: Record<string, string> = {
   'rl-VR-for-VL': 'นั่นคือแรงดันคร่อม R (= IR) แรงดันคร่อม L คือ ε − IR = εe^(−t/τ)',
   'mH-not-converted': 'แปลง mH เป็น H ก่อน: 1 mH = 10⁻³ H',
   'rl-ln-sign': 'จาก f = 1 − e^(−t/τ) ได้ t = −τ ln(1 − f) ไม่ใช่ −τ ln f',
+  // chapter 5
+  'b-times-c': 'B_max = E_max / c (หารด้วย c) ไม่ใช่คูณ c',
+  'e-over-c': 'E_max = c B_max (คูณด้วย c) ไม่ใช่หาร',
+  'k-no-2pi': 'k = 2π/λ จึงได้ λ = 2π/k อย่าลืม 2π',
+  'gave-omega': 'นั่นคือความถี่เชิงมุม ω = ck (rad/s) โจทย์ถามความถี่ f = ω/2π (Hz)',
+  'lambda-from-omega': 'ใช้ ω แทน f: ต้องหาร 2π ก่อน f = ω/2π แล้วค่อย λ = c/f',
+  'hemisphere-for-sphere': 'ส่ง “ทุกทิศทาง” คลื่นแผ่เต็มทรงกลม ใช้พื้นที่ 4πr² ไม่ใช่ครึ่งทรงกลม 2πr²',
+  'sphere-for-hemisphere': 'ส่งเฉพาะ “เหนือพื้นโลก” คลื่นแผ่เป็นครึ่งทรงกลม ใช้พื้นที่ 2πr² ไม่ใช่ 4πr²',
+  'pi-r2-area': 'พื้นที่ที่คลื่นแผ่ไปคือผิวทรงกลม 4πr² ไม่ใช่พื้นที่วงกลม πr²',
+  'kw-not-converted': 'แปลง kW เป็น W ก่อน: 1 kW = 10³ W',
+  'min-not-s': 'แปลงนาทีเป็นวินาทีก่อน: 1 นาที = 60 s',
+  'forgot-time': 'นั่นคือกำลังที่ตกบนพื้นที่ (W) ต้องคูณเวลาด้วยจึงได้พลังงาน U = IAt',
+  'no-half-intensity': 'ความเข้มคือค่าเฉลี่ย I = E²_max / 2μ₀c มีเลข 2 (ค่าเฉลี่ยของ cos² คือ ½)',
+  'reflect-no-2': 'ผิวสะท้อนสมบูรณ์ได้ความดัน 2S/c (คลื่นกลับทิศ โมเมนตัมเปลี่ยนสองเท่า)',
+  'absorb-2': 'ผิวดูดกลืนได้ความดัน S/c ส่วน 2S/c เป็นของผิวสะท้อน',
+  'f-not-1pf': 'ความดันคือ (1 + f)S/c: ส่วนที่ดูดกลืนให้ S/c แล้วส่วนที่สะท้อนให้เพิ่มอีก fS/c',
+  'full-sphere-area': 'แสงมาจากทางเดียว ดาวเคราะห์บังแสงเป็นวงกลม พื้นที่ πR² ไม่ใช่ผิวทรงกลม 4πR²',
+  'half-sphere-area': 'แสงมาจากทางเดียว ใช้พื้นที่หน้าตัด πR² ไม่ใช่ครึ่งผิวทรงกลม 2πR²',
+  'eb-cross-order': 'ลำดับ cross product กลับกัน: ต้องให้ E × B ชี้ไปทางที่คลื่นวิ่ง จึงได้ B̂ = k̂ × Ê (สลับลำดับแล้วเครื่องหมายกลับ)',
+  'b-parallel-e': 'B ต้องตั้งฉากกับ E เสมอ (คุณสมบัติข้อ 2)',
+  'b-along-k': 'คลื่น EM เป็นคลื่นตามขวาง B ต้องตั้งฉากกับทิศที่คลื่นวิ่ง',
+  'pressure-is-intensity': 'ความดันกับความเข้มต่างกัน: S = Pc (ผิวดูดกลืน) คูณ c ก่อน แล้วค่อยคูณพื้นที่',
 };
 
 // ------------------------------------------------------------- helpers
@@ -298,4 +331,31 @@ export const U = {
     { label: 'H', factor: 1 },
     { label: 'mH', factor: 1e-3 },
   ],
+  // chapter 5
+  fieldE: [{ label: 'V/m', factor: 1 }],
+  hertz: [
+    { label: 'Hz', factor: 1 },
+    { label: 'MHz', factor: 1e6 },
+    { label: 'GHz', factor: 1e9 },
+  ],
+  wavelength: [
+    { label: 'nm', factor: 1e-9 },
+    { label: 'μm', factor: 1e-6 },
+    { label: 'm', factor: 1 },
+  ],
+  intensity: [{ label: 'W/m²', factor: 1 }],
+  power: [
+    { label: 'W', factor: 1 },
+    { label: 'kW', factor: 1e3 },
+  ],
+  pressure: [
+    { label: 'Pa', factor: 1 },
+    { label: 'μPa', factor: 1e-6 },
+  ],
+  forceSmall: [
+    { label: 'N', factor: 1 },
+    { label: 'mN', factor: 1e-3 },
+    { label: 'μN', factor: 1e-6 },
+  ],
+  momentum: [{ label: 'kg·m/s', factor: 1 }],
 } satisfies Record<string, UnitOpt[]>;

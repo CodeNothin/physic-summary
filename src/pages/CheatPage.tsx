@@ -52,6 +52,20 @@ const glossary: [string, string][] = [
   ['สับสวิตช์', 'close the switch'],
   ['ต่ออนุกรม', 'connected in series'],
   ['ตามเข็ม / ทวนเข็มนาฬิกา', 'clockwise / counter-clockwise'],
+  // chapter 5
+  ['คลื่นแม่เหล็กไฟฟ้า', 'electromagnetic wave'],
+  ['กระแสกระจัด', 'displacement current'],
+  ['คลื่นตามขวาง', 'transverse wave'],
+  ['แอมพลิจูด', 'amplitude'],
+  ['ความยาวคลื่น / ความถี่', 'wavelength / frequency'],
+  ['เลขคลื่น', 'wave number k'],
+  ['ความเข้มของคลื่น', 'intensity'],
+  ['เวกเตอร์พอยน์ติง', 'Poynting vector'],
+  ['กำลังเฉลี่ย', 'average power'],
+  ['ความดันรังสี', 'radiation pressure'],
+  ['ดูดกลืน / สะท้อน', 'absorb / reflect'],
+  ['ตกกระทบ', 'incident'],
+  ['สุญญากาศ', 'vacuum'],
 ];
 
 /**
@@ -91,6 +105,16 @@ const sheetBlocks: { title: string; formulas: string[] }[] = [
       r`\Phi_B=\int\vec B\cdot d\vec A\qquad \varepsilon=-\dfrac{d\Phi_B}{dt}\qquad |\varepsilon|=B\ell v`,
       r`\varepsilon_L=-L\dfrac{dI}{dt}\qquad \tau=\dfrac{L}{R}`,
       r`I(t)=\dfrac{\varepsilon}{R}\left(1-e^{-t/\tau}\right)\qquad I(t)=\dfrac{\varepsilon}{R}e^{-t/\tau}`,
+    ],
+  },
+  {
+    title: 'Electromagnetic waves',
+    formulas: [
+      r`\dfrac{E_m}{B_m}=\dfrac{|\vec E|}{|\vec B|}=c\qquad c=\dfrac{1}{\sqrt{\mu_0\varepsilon_0}}\qquad \vec S=\dfrac{1}{\mu_0}\vec E\times\vec B`,
+      r`S=\varepsilon_0cE^2=\dfrac{cB^2}{\mu_0}\qquad S=\dfrac1A\dfrac{dU}{dt}=\dfrac{\text{Power}}{A}`,
+      r`I=\dfrac{E_m^2}{2\mu_0c}\qquad S_{av}=I=\dfrac{(\text{Power})_{av}}{A}`,
+      r`P=\dfrac{S}{c}\qquad P=\dfrac{2S}{c}\qquad P=\dfrac{(1+f)S}{c}`,
+      r`p=\dfrac{U}{c}\qquad p=\dfrac{2U}{c}\qquad p=\dfrac{(1+f)U}{c}\qquad p=\dfrac{(1+f)U}{c}\cos\theta`,
     ],
   },
   {
@@ -159,6 +183,19 @@ const notOnSheet: { chapter: string; items: string[] }[] = [
       r`หาเวลาจากกระแส: $t=-\tau\ln\left(1-I/I_{max}\right)$`,
     ],
   },
+  {
+    chapter: 'บทที่ 5 คลื่นแม่เหล็กไฟฟ้า',
+    items: [
+      r`สมการของแมกซ์เวลล์และกระแสกระจัด $I_d=\varepsilon_0\,d\Phi_E/dt$ (รู้ความหมาย)`,
+      r`อ่านสมการคลื่น $E=E_{max}\sin(kx-\omega t)$: $k=2\pi/\lambda$ (หน้า $x$), $\omega=2\pi f$ (หน้า $t$)`,
+      r`$c=f\lambda$ (ฟิสิกส์ ม.ปลาย) และวงจร LC $\omega=1/\sqrt{LC}$`,
+      r`ทิศของ $\vec B$: $\vec E\times\vec B$ ชี้ทางที่คลื่นวิ่ง จึงได้ $\hat B=\hat k\times\hat E$`,
+      r`พื้นที่ที่คลื่นแผ่ไป: ทุกทิศทาง $4\pi r^2$, เฉพาะเหนือพื้นโลก $2\pi r^2$`,
+      r`พลังงานที่ตกบนพื้นที่: $U=IAt$`,
+      r`แรงบนดาวเคราะห์: พื้นที่หน้าตัด $\pi R^2$ และ $F=PA$ (รัศมีดาวต้องให้ในโจทย์)`,
+      r`ลำดับสเปกตรัม: วิทยุ → ไมโครเวฟ → อินฟราเรด → แสง (700–400 nm) → UV → เอกซ์ → แกมมา`,
+    ],
+  },
 ];
 
 export function CheatPage() {
@@ -192,7 +229,7 @@ export function CheatPage() {
       </section>
 
       <section className="card">
-        <h2>สูตรในชีท บทที่ 1–4</h2>
+        <h2>สูตรในชีท บทที่ 1–5</h2>
         {sheetBlocks.map((b) => (
           <div key={b.title}>
             <h3>{b.title}</h3>
@@ -237,6 +274,9 @@ export function CheatPage() {
           <Li>{r`**เลนซ์ต้าน “การเปลี่ยนแปลง” ไม่ใช่ต้าน $B$** ฟลักซ์ลด สนามเหนี่ยวนำชี้ทางเดียวกับ $B$ เดิม`}</Li>
           <Li>{r`**$\tau=L/R$ ไม่ใช่ $R/L$** และแปลง mH, ms เป็น H, s ก่อนแทน`}</Li>
           <Li>{r`**กระแสขาขึ้นหรือขาลง?** ต่อแบตเตอรี่ใช้ $1-e^{-t/\tau}$ ตัดแบตเตอรี่ใช้ $e^{-t/\tau}$`}</Li>
+          <Li>{r`**$B=E/c$ หาร ไม่ใช่คูณ** และ $\lambda=2\pi/k$ อย่าลืม $2\pi$ ถามความถี่ตอบ $f$ ไม่ใช่ $\omega$`}</Li>
+          <Li>{r`**ทุกทิศทาง $4\pi r^2$ · เหนือพื้นโลก $2\pi r^2$** อ่านโจทย์ก่อนเลือกพื้นที่ และแปลง kW, นาที, km ก่อนแทน`}</Li>
+          <Li>{r`**ดูดกลืน $S/c$ · สะท้อน $2S/c$** และความเข้มมี $\tfrac12$: $I=E_{max}^2/2\mu_0c$`}</Li>
         </ol>
       </section>
 

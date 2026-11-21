@@ -11,14 +11,13 @@ import { checkAnswer, parseNumber } from '../physics/answers';
 import type { Verdict } from '../physics/answers';
 import { ch1to3Questions } from './ch1to3';
 import { ch4Questions } from './ch4';
+import { ch5Questions } from './ch5';
 import type { PlannedQuestion, Question, ShuffledBox } from './types';
 
-export const built: Question[] = [...ch1to3Questions, ...ch4Questions];
+export const built: Question[] = [...ch1to3Questions, ...ch4Questions, ...ch5Questions];
 
 /** Not written yet. `chapter` is the expected chapter id; check it when the chapter is built. */
 export const planned: PlannedQuestion[] = [
-  { q: 29, chapter: 'emwave', title: 'แหล่งกำเนิดคลื่น EM: ความเข้มและพลังงาน' },
-  { q: 30, chapter: 'emwave', title: 'สมการสนามไฟฟ้าของคลื่น EM' },
   { q: 31, chapter: 'light', title: 'การแทรกสอดสองสลิต (ตัวแปร)' },
   { q: 32, chapter: 'light', title: 'การแทรกสอดสองสลิต (600 nm)' },
   { q: 33, chapter: 'light', title: 'แสงผ่านแผ่นพลาสติก มุมตกกระทบ 60°' },

@@ -14,6 +14,7 @@
 import type { ComponentType } from 'react';
 import { FaradayPage, faradaySections } from './pages/FaradayPage';
 import { GaussPage, gaussSections } from './pages/GaussPage';
+import { EMWavePage, emwaveSections } from './pages/EMWavePage';
 import { MagnetismPage, magnetismSections } from './pages/MagnetismPage';
 import { PotentialPage, potentialSections } from './pages/PotentialPage';
 
@@ -74,7 +75,6 @@ export const chapters: Chapter[] = [
     sections: magnetismSections,
     Page: MagnetismPage,
   },
-  // ---- not written yet: shown greyed out on the home page
   {
     id: 'faraday',
     num: 4,
@@ -86,7 +86,18 @@ export const chapters: Chapter[] = [
     sections: faradaySections,
     Page: FaradayPage,
   },
-  { id: 'emwave', num: 5, title: 'คลื่นแม่เหล็กไฟฟ้า', en: 'Electromagnetic wave', blurb: '', icon: '📡', status: 'soon', sections: [] },
+  {
+    id: 'emwave',
+    num: 5,
+    title: 'คลื่นแม่เหล็กไฟฟ้า',
+    en: 'Electromagnetic waves',
+    blurb: 'แมกซ์เวลล์ · E/B = c · สเปกตรัม · พอยน์ติง · ความดันรังสี',
+    icon: '📡',
+    status: 'ready',
+    sections: emwaveSections,
+    Page: EMWavePage,
+  },
+  // ---- not written yet: shown greyed out on the home page
   { id: 'light', num: 6, title: 'แสง', en: 'Light', blurb: '', icon: '💡', status: 'soon', sections: [] },
   { id: 'modern1', num: 7, title: 'ฟิสิกส์ยุคใหม่ 1', en: 'Modern physics 1', blurb: '', icon: '⚛️', status: 'soon', sections: [] },
   { id: 'modern2', num: 8, title: 'ฟิสิกส์ยุคใหม่ 2', en: 'Modern physics 2', blurb: '', icon: '🔬', status: 'soon', sections: [] },
