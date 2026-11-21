@@ -88,7 +88,8 @@ index.html
               ├─ #/gauss, …        → the chapter's page (from chapters.ts)
               ├─ #/practice        → practice/PracticePage.tsx
               ├─ #/exam            → worksheet/ExamPage.tsx
-              └─ #/cheat           → pages/CheatPage.tsx
+              ├─ #/cheat           → pages/CheatPage.tsx
+              └─ #/support         → pages/SupportPage.tsx
 ```
 
 Where the numbers come from:
@@ -135,6 +136,7 @@ src/
     EMWavePage.tsx         chapter 5
     LightPage.tsx          chapter 6
     CheatPage.tsx          the สูตร tab
+    SupportPage.tsx        #/support (feedback + donate) and the SupportLine link
 
   components/
     ui.tsx                 text/math helpers, Section, WidgetFrame, Slider, Seg, Arrow, …
@@ -232,6 +234,7 @@ setup. `useRoute()` in `App.tsx` splits the hash into `[page, sub]`.
 | `#/exam/25` | Worksheet Q25 |
 | `#/exam/mock` | Mock exam (6 random worksheet questions) |
 | `#/cheat` | สูตร tab |
+| `#/support` | Feedback form and donations (not in the tab bar) |
 | `#/w/<id>` | One widget on its own |
 
 The bottom tab bar is the `tabs` array near the top of `App.tsx`. Each tab has a `match`
@@ -573,6 +576,10 @@ All CSS is in `src/styles.css`. There is no CSS framework.
 
 - `pages/HomePage.tsx`: progress bars, a card per chapter (from `chapters.ts`), and the
   ตัวอย่างข้อสอบ progress card.
+- `pages/SupportPage.tsx`: the `#/support` page (PromptPay QR + feedback form) and
+  `SupportLine`, the one-line "ส่ง Feedback · เลี้ยงขนม" link shown on the home page, at
+  the end of every chapter and on the สูตร tab. The QR is `public/promptpay-qr.png`
+  (bank-generated, static); the form link is `FEEDBACK_URL`.
 - `pages/CheatPage.tsx`: the สูตร tab. Students get an official formula sheet in the exam,
   so this page shows:
   1. the sheet's constants, as printed;

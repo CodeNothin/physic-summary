@@ -11,6 +11,7 @@
 //   #/exam                 → ตัวอย่างข้อสอบ: worksheet Q21–40 in full form
 //   #/exam/25, #/exam/mock → one worksheet question; a 6-question mock exam
 //   #/cheat                → formula sheet (mirrors the official exam sheet)
+//   #/support              → feedback form and donations
 //   #/w/<widgetId>         → one widget on its own (handy for testing/sharing)
 // A "#" URL never reloads the page and works on GitHub Pages without
 // any server setup, which is why it is used instead of normal paths.
@@ -21,6 +22,7 @@ import type { SectionInfo } from './chapters';
 import { effectiveTheme, setLastChapter, setTheme, useStore } from './lib/store';
 import { CheatPage } from './pages/CheatPage';
 import { HomePage } from './pages/HomePage';
+import { SupportLine, SupportPage } from './pages/SupportPage';
 import { PracticePage } from './practice/PracticePage';
 import { ExamPage } from './worksheet/ExamPage';
 import { W, widgets } from './widgets/registry';
@@ -90,6 +92,7 @@ function ChapterFooter({ id }: { id: string }) {
           </a>
         )}
       </div>
+      <SupportLine />
     </section>
   );
 }
@@ -135,6 +138,7 @@ export function App() {
   } else if (page === 'practice') body = <PracticePage key={sub ?? ''} sub={sub} />;
   else if (page === 'exam') body = <ExamPage sub={sub} />;
   else if (page === 'cheat') body = <CheatPage />;
+  else if (page === 'support') body = <SupportPage />;
   else if (page === 'w') {
     // single-widget view: a chip per widget, then the chosen one
     body = (

@@ -6,6 +6,7 @@
 // Formulas are plain text with $...$ math, so they are easy to edit here.
 // =====================================================================
 import { Li, M, T, Tex, r } from '../components/ui';
+import { SupportLine } from './SupportPage';
 
 const glossary: [string, string][] = [
   ['สนามไฟฟ้า', 'electric field'],
@@ -343,6 +344,7 @@ export function CheatPage() {
           </table>
         </div>
       </section>
+      <SupportLine />
     </>
   );
 }

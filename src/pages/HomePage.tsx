@@ -8,6 +8,7 @@ import { chapters, readyChapters } from '../chapters';
 import { Tex, r } from '../components/ui';
 import { resetProgress, useStore } from '../lib/store';
 import { allQuestions, built } from '../worksheet';
+import { FEEDBACK_URL } from './SupportPage';
 
 export function HomePage() {
   const s = useStore();
@@ -45,6 +46,13 @@ export function HomePage() {
             <i style={{ width: attempts ? `${(100 * correct) / attempts}%` : 0 }} />
           </div>
         </div>
+        <p className="small" style={{ marginBottom: 0 }}>
+          เว็บนี้ฟรีทั้งหมด ทำโดยนิสิตที่เรียนวิชานี้ · เจอที่ผิด?{' '}
+          <a href={FEEDBACK_URL} target="_blank" rel="noreferrer">
+            ส่ง Feedback
+          </a>{' '}
+          · ถ้าช่วยได้ <a href="#/support">เลี้ยงขนมหน่อย❤️</a>
+        </p>
       </section>
 
       <div className="home-links">
