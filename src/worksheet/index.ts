@@ -12,15 +12,13 @@ import type { Verdict } from '../physics/answers';
 import { ch1to3Questions } from './ch1to3';
 import { ch4Questions } from './ch4';
 import { ch5Questions } from './ch5';
+import { ch6Questions } from './ch6';
 import type { PlannedQuestion, Question, ShuffledBox } from './types';
 
-export const built: Question[] = [...ch1to3Questions, ...ch4Questions, ...ch5Questions];
+export const built: Question[] = [...ch1to3Questions, ...ch4Questions, ...ch5Questions, ...ch6Questions];
 
 /** Not written yet. `chapter` is the expected chapter id; check it when the chapter is built. */
 export const planned: PlannedQuestion[] = [
-  { q: 31, chapter: 'light', title: 'การแทรกสอดสองสลิต (ตัวแปร)' },
-  { q: 32, chapter: 'light', title: 'การแทรกสอดสองสลิต (600 nm)' },
-  { q: 33, chapter: 'light', title: 'แสงผ่านแผ่นพลาสติก มุมตกกระทบ 60°' },
   { q: 34, chapter: 'modern1', title: 'การแผ่รังสีของวัตถุดำ (ดาวซิริอุส)' },
   { q: 35, chapter: 'modern1', title: 'จำนวนโฟตอนจากไมโครเวฟ' },
   { q: 36, chapter: 'modern1', title: 'ความยาวคลื่นเดอบรอยล์ (ตัวแปร)' },

@@ -197,7 +197,7 @@ const q22 = defineQuestion<Q22>({
         'ระหว่างแผ่น ลูกศรจากแผ่นบวก (ซ้าย) ชี้ไปทางขวา ลูกศรจากแผ่นลบ (ขวา) ก็ชี้ไปทางขวา จึงบวกกัน',
       ],
       solution: [
-        String.raw`ผิวเกาส์ทรงกระบอกหน้าตัด $A$ ทะลุแผ่นซ้าย: $EA+0+EA=\dfrac{${nSigma(n)}A}{\varepsilon_0}$ ได้ $E_+=\dfrac{${nSigma(n)}}{2\varepsilon_0}$ ชี้ออกจากแผ่น`,
+        String.raw`ผิวเกาส์ทรงกระบอกหน้าตัด $A$ ทะลุแผ่นซ้าย: $EA+0+EA=\dfrac{${nSigma(n)}\,A}{\varepsilon_0}$ ได้ $E_+=\dfrac{${nSigma(n)}}{2\varepsilon_0}$ ชี้ออกจากแผ่น`,
         String.raw`ในทำนองเดียวกัน แผ่นขวา: $E_-=\dfrac{${nSigma(m)}}{2\varepsilon_0}$ ชี้เข้าหาแผ่นลบ`,
         String.raw`ระหว่างแผ่น ทั้งสองชี้ไปทางขวา: $E=\dfrac{${nSigma(n)}}{2\varepsilon_0}+\dfrac{${nSigma(m)}}{2\varepsilon_0}=\dfrac{${n + m}\sigma}{2\varepsilon_0}=${tex(ans)}\,\dfrac{\sigma}{\varepsilon_0}$`,
       ],

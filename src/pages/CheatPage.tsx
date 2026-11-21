@@ -66,6 +66,22 @@ const glossary: [string, string][] = [
   ['ดูดกลืน / สะท้อน', 'absorb / reflect'],
   ['ตกกระทบ', 'incident'],
   ['สุญญากาศ', 'vacuum'],
+  // chapter 6
+  ['การหักเห / ดัชนีหักเห', 'refraction / index of refraction'],
+  ['เส้นปกติ', 'normal'],
+  ['มุมวิกฤต', 'critical angle'],
+  ['การสะท้อนกลับหมด', 'total internal reflection'],
+  ['การแทรกสอด', 'interference'],
+  ['การเลี้ยวเบน', 'diffraction'],
+  ['สลิตคู่ / สลิตเดี่ยว', 'double slit / single slit'],
+  ['แถบสว่าง / แถบมืด (ริ้ว)', 'bright / dark fringe'],
+  ['ผลต่างระยะทาง / ผลต่างเฟส', 'path difference / phase difference'],
+  ['แสงเอกรงค์', 'monochromatic light'],
+  ['เกรตติงเลี้ยวเบน', 'diffraction grating'],
+  ['เลขลำดับ', 'order number'],
+  ['แผ่นโพลารอยด์', 'polaroid sheet (polarizer)'],
+  ['แกนส่งผ่าน', 'transmission axis'],
+  ['มุมบริวสเตอร์', 'Brewster angle'],
 ];
 
 /**
@@ -115,6 +131,19 @@ const sheetBlocks: { title: string; formulas: string[] }[] = [
       r`I=\dfrac{E_m^2}{2\mu_0c}\qquad S_{av}=I=\dfrac{(\text{Power})_{av}}{A}`,
       r`P=\dfrac{S}{c}\qquad P=\dfrac{2S}{c}\qquad P=\dfrac{(1+f)S}{c}`,
       r`p=\dfrac{U}{c}\qquad p=\dfrac{2U}{c}\qquad p=\dfrac{(1+f)U}{c}\qquad p=\dfrac{(1+f)U}{c}\cos\theta`,
+    ],
+  },
+  {
+    title: 'Light',
+    formulas: [
+      r`v=\dfrac{c}{\sqrt{K_eK_m}}\qquad \theta_1=\theta_1'\qquad \dfrac{\sin\theta_2}{\sin\theta_1}=\dfrac{n_1}{n_2}=\dfrac{v_2}{v_1}=\dfrac{\lambda_2}{\lambda_1}`,
+      r`n=\dfrac{c}{v}\qquad \lambda=\lambda_nn\qquad \sin\theta_c=\dfrac{n_2}{n_1}\qquad n=\tan\theta_p`,
+      r`d\sin\theta=\begin{cases}m\lambda & \text{bright}\\ \left(m+\tfrac12\right)\lambda & \text{dark}\end{cases}\quad m=0,\pm1,\pm2,\dots`,
+      r`\phi=\dfrac{2\pi}{\lambda}d\sin\theta\qquad \Delta y=\dfrac{\lambda L}{d}\qquad I=I_{max}\cos^2\dfrac{\phi}{2}`,
+      r`y_{\text{bright}}=\dfrac{\lambda L}{d}m\qquad y_{\text{dark}}=\dfrac{\lambda L}{d}\left(m+\tfrac12\right)\qquad m=0,\pm1,\pm2,\dots`,
+      r`a\sin\theta_{\text{dark}}=m\lambda\quad m=\pm1,\pm2,\dots`,
+      r`I_\theta=\left(\dfrac{I_m}{\alpha^2}\right)\sin^2\alpha\qquad \alpha=\dfrac{\pi a}{\lambda}\sin\theta\qquad \theta_{min}=\dfrac{\lambda}{a}`,
+      r`d\sin\theta_{\text{bright}}=m\lambda\ \ (m=0,\pm1,\dots)\qquad I=I_{max}\cos^2\theta`,
     ],
   },
   {
@@ -196,6 +225,20 @@ const notOnSheet: { chapter: string; items: string[] }[] = [
       r`ลำดับสเปกตรัม: วิทยุ → ไมโครเวฟ → อินฟราเรด → แสง (700–400 nm) → UV → เอกซ์ → แกมมา`,
     ],
   },
+  {
+    chapter: 'บทที่ 6 แสง',
+    items: [
+      r`สเนลแบบจำง่าย $n_1\sin\theta_1=n_2\sin\theta_2$ และทุกมุมวัดจาก **เส้นปกติ**`,
+      r`ข้ามรอยต่อ ความถี่ไม่เปลี่ยน จึงได้ $\lambda_n=\lambda/n$ และ $v=c/n$`,
+      r`มุมเล็ก $\sin\theta\approx\tan\theta=y/L$ จึงได้ $I=I_{max}\cos^2(\pi dy/\lambda L)$ (เรเดียน)`,
+      r`แถบมืดแรกของสลิตคู่คือ $m=0$ ใน $(m+\tfrac12)$`,
+      r`สลิตเดี่ยวบนฉาก: แถบมืด $y=m\lambda D/a$ แถบสว่างกลางกว้าง $2\lambda D/a$`,
+      r`ช่องกลม (เรย์ลี): $\theta_R=1.22\lambda/D$`,
+      r`เกรตติง: $d=$ ความยาว ÷ จำนวนเส้น ลำดับสูงสุด $m\le d/\lambda$`,
+      r`แสงไม่โพลาไรซ์ผ่านแผ่นแรกเหลือ $\tfrac12$ มุมในมาลุสคือมุมระหว่างแผ่นกับแผ่นก่อนหน้า`,
+      r`ข้อ 33: ระยะทางในแผ่น $L=\sqrt{d^2+x^2}$, $\sin\theta=x/L$, $t=L/v$`,
+    ],
+  },
 ];
 
 export function CheatPage() {
@@ -229,7 +272,7 @@ export function CheatPage() {
       </section>
 
       <section className="card">
-        <h2>สูตรในชีท บทที่ 1–5</h2>
+        <h2>สูตรในชีท บทที่ 1–6</h2>
         {sheetBlocks.map((b) => (
           <div key={b.title}>
             <h3>{b.title}</h3>
@@ -277,6 +320,9 @@ export function CheatPage() {
           <Li>{r`**$B=E/c$ หาร ไม่ใช่คูณ** และ $\lambda=2\pi/k$ อย่าลืม $2\pi$ ถามความถี่ตอบ $f$ ไม่ใช่ $\omega$`}</Li>
           <Li>{r`**ทุกทิศทาง $4\pi r^2$ · เหนือพื้นโลก $2\pi r^2$** อ่านโจทย์ก่อนเลือกพื้นที่ และแปลง kW, นาที, km ก่อนแทน`}</Li>
           <Li>{r`**ดูดกลืน $S/c$ · สะท้อน $2S/c$** และความเข้มมี $\tfrac12$: $I=E_{max}^2/2\mu_0c$`}</Li>
+          <Li>{r`**มุมวัดจากเส้นปกติ** มุมกับผิวหรือขอบฟ้าต้องแปลงเป็น $90^\circ-$ มุมนั้นก่อนใช้สเนล`}</Li>
+          <Li>{r`**$\cos^2(\pi dy/\lambda L)$ ใช้เรเดียน** และแถบมืดแรกคือ $m=0$ · สลิตเดี่ยว $a\sin\theta=m\lambda$ คือ **มืด** ไม่ใช่สว่าง`}</Li>
+          <Li>{r`**แสงไม่โพลาไรซ์ $\to\tfrac12$ ก่อน** แล้วค่อย $\cos^2$ ของมุมระหว่างแผ่นที่ติดกัน`}</Li>
         </ol>
       </section>
 

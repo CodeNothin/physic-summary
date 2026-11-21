@@ -15,6 +15,7 @@ import type { ComponentType } from 'react';
 import { FaradayPage, faradaySections } from './pages/FaradayPage';
 import { GaussPage, gaussSections } from './pages/GaussPage';
 import { EMWavePage, emwaveSections } from './pages/EMWavePage';
+import { LightPage, lightSections } from './pages/LightPage';
 import { MagnetismPage, magnetismSections } from './pages/MagnetismPage';
 import { PotentialPage, potentialSections } from './pages/PotentialPage';
 
@@ -97,8 +98,18 @@ export const chapters: Chapter[] = [
     sections: emwaveSections,
     Page: EMWavePage,
   },
+  {
+    id: 'light',
+    num: 6,
+    title: 'แสง',
+    en: 'Light',
+    blurb: 'สเนล · สะท้อนกลับหมด · สลิตคู่ · สลิตเดี่ยว · เกรตติง · โพลาไรเซชัน',
+    icon: '💡',
+    status: 'ready',
+    sections: lightSections,
+    Page: LightPage,
+  },
   // ---- not written yet: shown greyed out on the home page
-  { id: 'light', num: 6, title: 'แสง', en: 'Light', blurb: '', icon: '💡', status: 'soon', sections: [] },
   { id: 'modern1', num: 7, title: 'ฟิสิกส์ยุคใหม่ 1', en: 'Modern physics 1', blurb: '', icon: '⚛️', status: 'soon', sections: [] },
   { id: 'modern2', num: 8, title: 'ฟิสิกส์ยุคใหม่ 2', en: 'Modern physics 2', blurb: '', icon: '🔬', status: 'soon', sections: [] },
   { id: 'nuclear', num: 9, title: 'ฟิสิกส์นิวเคลียร์', en: 'Nuclear', blurb: '', icon: '☢️', status: 'soon', sections: [] },

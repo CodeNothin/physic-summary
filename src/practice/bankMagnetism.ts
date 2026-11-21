@@ -423,7 +423,8 @@ export const magnetismGenerators: Generator[] = [
         solution: [
           String.raw`เส้นซ้ายห่าง P ${tex(xP * 100)} cm: $B=${tex(Math.abs(bL))}$ T ทิศ${bL > 0 ? 'ออก (⊙)' : 'เข้า (⊗)'}`,
           String.raw`เส้นขวาห่าง P ${tex(Math.abs(xP - L) * 100)} cm: $B=${tex(Math.abs(bR))}$ T ทิศ${bR > 0 ? 'ออก (⊙)' : 'เข้า (⊗)'}`,
-          String.raw`รวม: $B_z=${tex(bL)}+(${tex(bR)})=${tex(Bz)}\ \mathrm T$ (${Bz > 0 ? 'ออกจากกระดาษ' : 'เข้ากระดาษ'})`,
+          // a zero field has no direction, so only name one when the sum is not zero
+          String.raw`รวม: $B_z=${tex(bL)}+(${tex(bR)})=${tex(Bz)}\ \mathrm T$ (${Math.abs(Bz) < 1e-15 ? 'สองเส้นหักล้างกันพอดี' : Bz > 0 ? 'ออกจากกระดาษ' : 'เข้ากระดาษ'})`,
         ],
       };
     },

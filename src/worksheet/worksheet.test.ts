@@ -77,6 +77,29 @@ describe('worksheet answer key (original numbers)', () => {
     expect(checkBox(boxes(30)[0], { text: '6.7e-3', unitIdx: 0, choice: null }).kind).toBe('correct');
     expect(checkBox(boxes(30)[2], { text: '5.7e14', unitIdx: 0, choice: null }).kind).toBe('correct');
   });
+  it('Q31: x = λL/2d, Δx = λΔL/2d, λ₂/λ₁ = L/(L+ΔL)', () => {
+    const correct = (i: number) => {
+      const b = boxes(31)[i];
+      return b.kind === 'choice' ? b.options[b.correctIndex!].tex : '';
+    };
+    expect(correct(0)).toBe(String.raw`x=\dfrac{\lambda L}{2d}`);
+    expect(correct(1)).toBe(String.raw`\Delta x=\dfrac{\lambda\,\Delta L}{2d}`);
+    expect(correct(2)).toBe(String.raw`\dfrac{\lambda_2}{\lambda_1}=\dfrac{L}{L+\Delta L}`);
+  });
+  it('Q32: I = 0.883 I_max (also 0.88)', () => {
+    near(num(32, 0), 0.883, 0.003);
+    expect(checkBox(boxes(32)[0], { text: '0.883', unitIdx: 0, choice: null }).kind).toBe('correct');
+  });
+  it('Q33: t = (√3/2)(d² + x²)/(cx)', () => {
+    const b = boxes(33)[0];
+    if (b.kind === 'choice') expect(b.options[b.correctIndex!].tex).toBe(String.raw`t=\left(\dfrac{\sqrt3}{2}\right)\dfrac{d^2+x^2}{cx}`);
+  });
+  it('Q31 and Q33: the four options are always different', () => {
+    for (let s = 1; s <= 100; s++)
+      for (const q of [31, 33])
+        for (const b of questionByNumber(q)!.make(s * 37).parts.flatMap((p) => p.boxes))
+          if (b.kind === 'choice') expect(new Set(b.options.map((o) => o.tex)).size).toBe(4);
+  });
   it('Q30: the four direction options are always different', () => {
     for (let s = 1; s <= 100; s++) {
       const b = questionByNumber(30)!.make(s * 31).parts[0].boxes[1];

@@ -116,7 +116,93 @@ function Q28() {
   );
 }
 
-const figures: Record<string, (x: { p: Props }) => ReactNode> = { q21: Q21, q22: Q22, q27: Q27, q28: Q28 };
+/**
+ * Q31: (A) double slit with d, L and x to the first dark fringe;
+ * (B) the screen moved back by ΔL, so x grows to x + Δx.
+ * Fringes on each screen are drawn as short dark/light bars.
+ */
+function Q31() {
+  const panel = (ox: number, label: string, moved: boolean) => {
+    const bx = ox + 18; // barrier with the two slits
+    const sx = ox + (moved ? 128 : 100); // screen
+    const cy = 78; // centre line
+    const half = moved ? 15 : 11; // pixels from centre to the first dark fringe
+    return (
+      <g>
+        {/* barrier with two small gaps at cy ± 16 */}
+        <line x1={bx} y1={20} x2={bx} y2={cy - 19} className="s-ink" strokeWidth={3} />
+        <line x1={bx} y1={cy - 13} x2={bx} y2={cy + 13} className="s-ink" strokeWidth={3} />
+        <line x1={bx} y1={cy + 19} x2={bx} y2={136} className="s-ink" strokeWidth={3} />
+        <text x={bx - 14} y={cy + 4} className="small">d</text>
+        <line x1={bx - 5} y1={cy - 16} x2={bx - 5} y2={cy + 16} className="s-muted" strokeWidth={1} />
+        {/* old screen position in (B) */}
+        {moved && <line x1={ox + 100} y1={24} x2={ox + 100} y2={132} className="s-muted" strokeWidth={1.2} strokeDasharray="4 3" />}
+        {/* screen with fringes: bright at the centre, dark at ±half, … */}
+        <rect x={sx} y={24} width={7} height={108} className="f-card s-ink" strokeWidth={1} />
+        {[-3, -2, -1, 0, 1, 2]
+          .map((j) => cy + half * (2 * j + 1) - half / 2) // top of each dark mark
+          .filter((y) => y >= 24 && y + half <= 132) // keep only marks that fit on the screen
+          .map((y) => (
+            <rect key={y} x={sx} y={y} width={7} height={half} className="f-ink" opacity={0.75} />
+          ))}
+        <line x1={bx} y1={cy} x2={sx} y2={cy} className="s-muted" strokeWidth={1} strokeDasharray="3 3" />
+        {/* x (or x + Δx) beside the screen */}
+        <line x1={sx + 12} y1={cy} x2={sx + 12} y2={cy - half} className="s-accent" strokeWidth={1.6} />
+        <text x={sx + 15} y={cy - half / 2 + 4} className="small">{moved ? 'x+Δx' : 'x'}</text>
+        {/* L (and ΔL) under the picture */}
+        <line x1={bx} y1={146} x2={ox + 100} y2={146} className="s-muted" strokeWidth={1} />
+        <text x={(bx + ox + 100) / 2 - 3} y={158} className="small">L</text>
+        {moved && (
+          <>
+            <line x1={ox + 100} y1={146} x2={sx} y2={146} className="s-accent" strokeWidth={1.4} />
+            <text x={ox + 104} y={158} className="small">ΔL</text>
+          </>
+        )}
+        <text x={ox + 60} y={14} textAnchor="middle" className="small" style={{ fontWeight: 700 }}>
+          {label}
+        </text>
+      </g>
+    );
+  };
+  return (
+    <svg viewBox="0 0 330 165" className="stage pan-y" style={{ maxWidth: 380 }}>
+      {panel(0, '(A)', false)}
+      {panel(160, '(B)', true)}
+    </svg>
+  );
+}
+
+/**
+ * Q33: a beam enters a plate of thickness d from the upper right at the
+ * angle `inc` to the normal, bends inside, and leaves a sideways
+ * distance x further on (x is measured between the two dashed normals).
+ */
+function Q33({ p }: { p: Props }) {
+  const top = 50;
+  const bot = 110;
+  const ex = 140; // entry point
+  const xx = 46; // sideways shift on screen
+  const t = ((p.inc ?? 60) * Math.PI) / 180;
+  return (
+    <svg viewBox="0 0 240 170" className="stage pan-y" style={{ maxWidth: 280 }}>
+      <rect x={30} y={top} width={180} height={bot - top} className="f-metal" opacity={0.6} />
+      <line x1={ex} y1={12} x2={ex} y2={150} className="s-muted" strokeWidth={1} strokeDasharray="4 3" />
+      <line x1={ex - xx} y1={12} x2={ex - xx} y2={150} className="s-muted" strokeWidth={1} strokeDasharray="4 3" />
+      {/* incoming ray, the path inside, and the outgoing ray (parallel to the incoming one) */}
+      <line x1={ex + 48 * Math.tan(t)} y1={top - 48} x2={ex} y2={top} className="s-ink" strokeWidth={2} />
+      <line x1={ex} y1={top} x2={ex - xx} y2={bot} className="s-ink" strokeWidth={2} />
+      <line x1={ex - xx} y1={bot} x2={ex - xx - 34 * Math.tan(t)} y2={bot + 34} className="s-ink" strokeWidth={2} />
+      <text x={ex + 6} y={top - 30} className="small">{`${p.inc ?? 60}°`}</text>
+      {/* d on the left, x at the bottom */}
+      <line x1={40} y1={top} x2={40} y2={bot} className="s-accent" strokeWidth={1.4} />
+      <text x={45} y={(top + bot) / 2 + 4} className="small">d</text>
+      <line x1={ex - xx} y1={158} x2={ex} y2={158} className="s-accent" strokeWidth={1.4} />
+      <text x={ex - xx / 2 - 3} y={168} className="small">x</text>
+    </svg>
+  );
+}
+
+const figures: Record<string, (x: { p: Props }) => ReactNode> = { q21: Q21, q22: Q22, q27: Q27, q28: Q28, q31: Q31, q33: Q33 };
 
 export function Figure({ id, props }: { id: string; props: Props }) {
   const F = figures[id];

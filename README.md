@@ -133,6 +133,7 @@ src/
     MagnetismPage.tsx      chapter 3 (the best template to copy)
     FaradayPage.tsx        chapter 4
     EMWavePage.tsx         chapter 5
+    LightPage.tsx          chapter 6
     CheatPage.tsx          the สูตร tab
 
   components/
@@ -148,11 +149,13 @@ src/
     magnetism.ts           chapter 3 (μ0 = 4π×10⁻⁷, e = 1.60e-19)
     faraday.ts             chapter 4 (flux, Lenz, Bℓv, RL circuits; flux into the page = +)
     emwave.ts              chapter 5 (E/B = c, k and f, intensity, radiation pressure; c = 3×10⁸)
+    light.ts               chapter 6 (Snell, TIR, double/single slit, grating, Malus, Brewster; angles in degrees)
     answers.ts             parse a typed number, check it (2 % or exact 2-sig-fig rounding, sign, ×10ⁿ, known slips)
     physics.test.ts        chapters 1–2 tests (worksheet Q21–25 + lecture examples)
     magnetism.test.ts      chapter 3 tests (Q26–27, slide examples, numeric cross-checks)
     faraday.test.ts        chapter 4 tests (Q28, slides 10–13, 24, 27–30)
     emwave.test.ts         chapter 5 tests (Q29–30, slides 12, 15, 20, 21)
+    light.test.ts          chapter 6 tests (Q31–33, slides 9, 14, 15, 25, 26, 34, 38–39)
 
   practice/                the ฝึกโจทย์(สั้น) tab
     common.ts              types, skill list, feedback sentences, random helpers, unit lists
@@ -160,6 +163,7 @@ src/
     bankMagnetism.ts       short-question generators, chapter 3
     bankFaraday.ts         short-question generators, chapter 4
     bankEmwave.ts          short-question generators, chapter 5
+    bankLight.ts           short-question generators, chapter 6
     questions.ts           joins the banks; links pieces to worksheet Qs; timed sets
     PracticePage.tsx       menu, drill screen, timed set screen
     questions.test.ts      runs every generator 200 times
@@ -169,8 +173,9 @@ src/
     ch1to3.ts              worksheet Q21–27
     ch4.ts                 worksheet Q28
     ch5.ts                 worksheet Q29–30
+    ch6.ts                 worksheet Q31–33 (Q31, Q33 answered in symbols → choice boxes)
     index.ts               all 20 questions (built + planned), checkBox()
-    figures.tsx            the "ดังรูป" figures (Q21, Q22, Q27, Q28)
+    figures.tsx            the "ดังรูป" figures (Q21, Q22, Q27, Q28, Q31, Q33)
     ExamPage.tsx           list, one-question screen, mock exam
     worksheet.test.ts      answer-key tests + 300 random seeds per question
 
@@ -251,7 +256,7 @@ function that decides when it is highlighted.
 }
 ```
 
-Chapters 6–9 are already listed with `status: 'soon'`.
+Chapters 7–9 are already listed with `status: 'soon'`.
 
 ### 5.3 Chapter pages and the text building blocks
 
@@ -444,8 +449,8 @@ strings are written `String.raw`…``; it is the same as `r`…`` from `componen
 
 The exam takes **6 of the 20 worksheet questions** with new numbers. This tab therefore
 keeps each question exactly as written, with all its parts (ก, ข, …), and only changes the
-numbers. Q21–30 are built. Q31–40 are listed in `planned` in `worksheet/index.ts` and get
-built along with chapters 6–9.
+numbers. Q21–33 are built. Q34–40 are listed in `planned` in `worksheet/index.ts` and get
+built along with chapters 7–9.
 
 A question is written with `defineQuestion` (see `worksheet/types.ts` and `ch1to3.ts`):
 
@@ -715,6 +720,13 @@ than one way. The answers are the same either way; only the presentation may cha
 - **Sunlight pushing on the Earth (chapter 5, slide 21):** the slide gives no Earth radius;
   the site uses R = 6.37×10⁶ m and the cross-section πR², giving F = 5.8×10⁸ N. File:
   `src/pages/EMWavePage.tsx`. The practice version prints the radius in the question.
+- **Slit width from two dark fringes (chapter 6, slide 25):** "ริ้วมืดที่อยู่ถัดกัน 2 ริ้ว" is read as
+  two neighbouring dark fringes on the same side, λD/a apart, giving a = 0.30 mm. If the
+  professor means the two darks either side of the centre (2λD/a apart), a = 0.60 mm. The
+  practice version says "ด้านเดียวกันของแถบกลาง" to avoid the doubt. File: `src/pages/LightPage.tsx`.
+- **Worksheet Q31 and Q33 have no numbers.** Their exam-style variants change only what
+  could be a number: which dark fringe x is measured to (Q31) and the angle of incidence
+  (Q33). File: `src/worksheet/ch6.ts`.
 
 **Scope notes**
 
@@ -724,8 +736,8 @@ than one way. The answers are the same either way; only the presentation may cha
 - In ตัวอย่างข้อสอบ, Q21's random numbers sometimes put the asked point outside the shell
   instead of in the metal, Q23's charge can be negative, and Q27 keeps the worksheet's
   current directions. The structure always matches the worksheet.
-- The mock exam picks from every built question (now Q21–30), and the สูตร tab shows the
-  sheet for chapters 1–5 only. Both grow as chapters are added.
+- The mock exam picks from every built question (now Q21–33), and the สูตร tab shows the
+  sheet for chapters 1–6 only. Both grow as chapters are added.
 - One wide equation on the Gauss page scrolls inside its own box on phones (by design).
 - The build warns that the JavaScript bundle is over 500 kB (KaTeX is most of it). It
   loads fine; splitting it is optional.

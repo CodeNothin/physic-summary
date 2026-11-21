@@ -613,7 +613,7 @@ export const electricGenerators: Generator[] = [
         answer: ans,
         scale: Math.abs(ans),
         mistakes: [
-          { id: 'only-Q', value: P.netFlux((q + out) * nC) },
+          { id: 'outside-charge', value: P.netFlux((q + out) * nC) },
           { id: 'used-k', value: P.K * q * nC },
         ],
         hints: ['นับเฉพาะประจุที่อยู่ข้างในผิวปิด', String.raw`$\Phi_E=q_{in}/\varepsilon_0$`],
@@ -944,7 +944,7 @@ export const electricGenerators: Generator[] = [
         units: U.volt,
         answer: ans,
         scale: ans,
-        mistakes: [{ id: 'zero-inside-V', value: 0 }],
+        mistakes: [{ id: 'zero-E-not-zero-V', value: 0 }],
         hints: ['ที่จุดศูนย์กลาง x = 0 สนามเป็นศูนย์ แต่ศักย์ไม่จำเป็นต้องเป็นศูนย์', String.raw`$V=kQ/a$`],
         solution: [
           String.raw`ที่ $x=0$ ทุกชิ้นของวงแหวนห่างเท่ากับ $a$`,

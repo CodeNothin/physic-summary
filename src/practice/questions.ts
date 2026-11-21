@@ -6,6 +6,7 @@
 // =====================================================================
 import { electricGenerators } from './bankElectric';
 import { emwaveGenerators } from './bankEmwave';
+import { lightGenerators } from './bankLight';
 import { faradayGenerators } from './bankFaraday';
 import { magnetismGenerators } from './bankMagnetism';
 import { mulberry32, skillChapter, skillNames } from './common';
@@ -45,9 +46,22 @@ const wsOf: Record<string, number> = {
   'q30-Bmax': 30,
   'q30-freq': 30,
   'wave-lambda': 30,
+  'q31-x': 31,
+  'q31-dx': 31,
+  'q31-ratio': 31,
+  'q32-L': 32,
+  'q32-intensity': 32,
+  'q33-time': 33,
+  'q33-index': 33,
 };
 
-export const generators: Generator[] = [...electricGenerators, ...magnetismGenerators, ...faradayGenerators, ...emwaveGenerators].map((g) => ({
+export const generators: Generator[] = [
+  ...electricGenerators,
+  ...magnetismGenerators,
+  ...faradayGenerators,
+  ...emwaveGenerators,
+  ...lightGenerators,
+].map((g) => ({
   ...g,
   ws: wsOf[g.id],
 }));
@@ -142,6 +156,23 @@ export const examSets: ExamSet[] = [
       ['intensity-from-E', 'emax-from-intensity', 'emax-at-distance'],
       ['pressure-absorb-reflect', 'pressure-partial', 'sail-force'],
       ['power-from-pressure', 'force-planet', 'momentum-oblique', 'displacement-current'],
+    ],
+  },
+  {
+    id: 'ch6',
+    label: 'บทที่ 6 (แนวข้อ 31–33)',
+    chapters: ['light'],
+    minutes: 20,
+    slots: [
+      ['snell-angle', 'critical-angle', 'speed-wavelength-medium'],
+      ['q33-time', 'q33-index', 'tank-depth'],
+      ['q31-x', 'q31-dx', 'q31-ratio'],
+      ['q32-L', 'ds-bright', 'ds-dark'],
+      ['q32-intensity', 'ds-intensity-position'],
+      ['ds-lambda-from-spacing', 'ds-dark-matches-bright'],
+      ['ss-first-dark', 'ss-central-width', 'ss-slit-width'],
+      ['grating-angle', 'grating-max-order', 'rayleigh-circle'],
+      ['malus-unpol-two', 'malus-three', 'crossed-middle', 'brewster-angle'],
     ],
   },
 ];

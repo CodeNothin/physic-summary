@@ -335,3 +335,4 @@ export function twoSpheres(Qtotal: number, r1: number, r2: number): TwoSpheresRe
 export * from './magnetism';
 export * from './faraday';
 export * from './emwave';
+export * from './light';

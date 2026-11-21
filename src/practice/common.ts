@@ -7,6 +7,7 @@
 //   bankMagnetism.ts  question generators for chapter 3
 //   bankFaraday.ts    question generators for chapter 4
 //   bankEmwave.ts     question generators for chapter 5
+//   bankLight.ts      question generators for chapter 6
 //   questions.ts      joins them, and defines the timed exam sets
 //
 // A "generator" is a recipe that, given a random-number source, makes
@@ -46,7 +47,12 @@ export type Skill =
   // chapter 5
   | 'emWave'
   | 'emIntensity'
-  | 'radPressure';
+  | 'radPressure'
+  // chapter 6
+  | 'refraction'
+  | 'interference'
+  | 'diffraction'
+  | 'polarization';
 
 export const skillNames: Record<Skill, string> = {
   flux: 'ฟลักซ์และกฎของเกาส์',
@@ -69,6 +75,10 @@ export const skillNames: Record<Skill, string> = {
   emWave: 'คลื่นระนาบ E/B = c · λ และ f (ข้อ 30)',
   emIntensity: 'ความเข้มและพลังงานของคลื่น (ข้อ 29)',
   radPressure: 'ความดันรังสีและโมเมนตัม',
+  refraction: 'การหักเห · มุมวิกฤต · แผ่นพลาสติก (ข้อ 33)',
+  interference: 'สลิตคู่: ตำแหน่งแถบและความเข้ม (ข้อ 31–32)',
+  diffraction: 'สลิตเดี่ยว · เรย์ลี · เกรตติง',
+  polarization: 'โพลาไรเซชัน · มาลุส · บริวสเตอร์',
 };
 
 /** Which chapter (by id in src/chapters.ts) each skill belongs to. */
@@ -93,6 +103,10 @@ export const skillChapter: Record<Skill, string> = {
   emWave: 'emwave',
   emIntensity: 'emwave',
   radPressure: 'emwave',
+  refraction: 'light',
+  interference: 'light',
+  diffraction: 'light',
+  polarization: 'light',
 };
 
 // ------------------------------------------------------------ types
@@ -144,6 +158,8 @@ export const mistakeText: Record<string, string> = {
   'inverse-r2': 'ดูเหมือนใช้ 1/r² ทั้งที่ต้องใช้ 1/r — ศักย์คือ kQ/r (ส่วน kQ/r² เป็นสูตรของสนาม)',
   'used-r-inside': 'ในเนื้อตัวนำ ศักย์เท่ากับที่ผิว ต้องแทนรัศมีทรงกลม R ไม่ใช่ระยะ r',
   'zero-inside-V': 'E = 0 ไม่ได้แปลว่า V = 0 ในตัวนำ V เท่ากับค่าที่ผิว',
+  'zero-E-not-zero-V': 'E = 0 ไม่ได้แปลว่า V = 0: ที่จุดนี้สนามจากแต่ละชิ้นหักล้างกัน แต่ศักย์เป็นสเกลาร์ บวกกันได้ kQ/a',
+  'outside-charge': 'ประจุที่อยู่ข้างนอกผิวปิดไม่นับ: เส้นสนามของมันเข้าแล้วก็ออก ฟลักซ์สุทธิ = q_in/ε₀',
   'point-inside': 'จุดนี้อยู่ข้างในวัตถุ ใช้สูตรจุดประจุ kQ/r² ตรง ๆ ไม่ได้ เช็กก่อนว่าผิวเกาส์ล้อมประจุเท่าไร',
   'conductor-inside': 'นี่คือฉนวน ไม่ใช่ตัวนำ ประจุกระจายทั่วเนื้อ ข้างในจึงมีสนาม (q_in = Q r³/a³)',
   'used-R': 'ต้องแทนระยะ r ของจุดที่ถาม ไม่ใช่รัศมีทรงกลม R',
@@ -162,7 +178,7 @@ export const mistakeText: Record<string, string> = {
   'missing-pair': 'ต้องบวกครบทุกคู่ (3 ประจุมี 3 คู่)',
   'abs-values': 'ต้องเก็บเครื่องหมายของประจุไว้ตอนบวก',
   'other-component': 'นั่นคือองค์ประกอบอีกแกนหนึ่ง',
-  'no-minus': 'ลืมเครื่องหมายลบ: E = −dV/dx',
+  'no-minus': 'ลืมเครื่องหมายลบ: Eₓ = −∂V/∂x และ E_y = −∂V/∂y',
   'ring-distance': 'ระยะที่ต้องใช้คือ √(a²+x²) จากชิ้นประจุบนวงแหวนถึงจุดนั้น ไม่ใช่ x',
   'ring-as-point': 'วงแหวนไม่ใช่จุดประจุ: ส่วนด้านข้างหักล้างกัน เหลือแต่ส่วนตามแกน E = kQx/(a²+x²)^(3/2)',
   // worksheet multiple choice (ตัวอย่างข้อสอบ)
@@ -212,7 +228,9 @@ export const mistakeText: Record<string, string> = {
   'min-not-s': 'แปลงนาทีเป็นวินาทีก่อน: 1 นาที = 60 s',
   'forgot-time': 'นั่นคือกำลังที่ตกบนพื้นที่ (W) ต้องคูณเวลาด้วยจึงได้พลังงาน U = IAt',
   'no-half-intensity': 'ความเข้มคือค่าเฉลี่ย I = E²_max / 2μ₀c มีเลข 2 (ค่าเฉลี่ยของ cos² คือ ½)',
-  'reflect-no-2': 'ผิวสะท้อนสมบูรณ์ได้ความดัน 2S/c (คลื่นกลับทิศ โมเมนตัมเปลี่ยนสองเท่า)',
+  'reflect-no-2': 'ผิวสะท้อนสมบูรณ์ได้สองเท่าของผิวดูดกลืน: p = 2U/c และ P = 2S/c (คลื่นกลับทิศ โมเมนตัมเปลี่ยนสองเท่า)',
+  'ss-no-half': 'สลิตเดี่ยวไม่มี ½: แถบมืดอยู่ที่ a sinθ = mλ (m = ±1, ±2, …) ส่วน (m + ½) เป็นแถบมืดของสลิตคู่',
+  'dark-spacing-double': 'ริ้วมืดถัดกันด้านเดียวกันห่างกัน λD/a (ส่วน 2λD/a คือระยะข้ามแถบสว่างกลาง)',
   'absorb-2': 'ผิวดูดกลืนได้ความดัน S/c ส่วน 2S/c เป็นของผิวสะท้อน',
   'f-not-1pf': 'ความดันคือ (1 + f)S/c: ส่วนที่ดูดกลืนให้ S/c แล้วส่วนที่สะท้อนให้เพิ่มอีก fS/c',
   'full-sphere-area': 'แสงมาจากทางเดียว ดาวเคราะห์บังแสงเป็นวงกลม พื้นที่ πR² ไม่ใช่ผิวทรงกลม 4πR²',
@@ -221,6 +239,32 @@ export const mistakeText: Record<string, string> = {
   'b-parallel-e': 'B ต้องตั้งฉากกับ E เสมอ (คุณสมบัติข้อ 2)',
   'b-along-k': 'คลื่น EM เป็นคลื่นตามขวาง B ต้องตั้งฉากกับทิศที่คลื่นวิ่ง',
   'pressure-is-intensity': 'ความดันกับความเข้มต่างกัน: S = Pc (ผิวดูดกลืน) คูณ c ก่อน แล้วค่อยคูณพื้นที่',
+  // chapter 6
+  'angle-from-surface': 'มุมในกฎของสเนลวัดจากเส้นปกติ ถ้าโจทย์ให้มุมกับผิวหรือกับขอบฟ้า ต้องใช้ 90° − มุมนั้น',
+  'snell-inverted': 'สลับ n₁ กับ n₂: n₁ sinθ₁ = n₂ sinθ₂ ดัชนีของตัวกลางที่แสงมาจากคู่กับมุมตกกระทบ',
+  'n-times-speed': 'ในตัวกลาง แสงช้าลง v = c/n (หารด้วย n ไม่ใช่คูณ)',
+  'lambda-n-times': 'ความยาวคลื่นในตัวกลางสั้นลง λₙ = λ/n (หารด้วย n)',
+  'critical-inverted': 'sinθc = n₂/n₁ (ดัชนีตัวเล็กหารตัวใหญ่) ค่าต้องน้อยกว่า 1',
+  'tank-tan-inverted': 'จากรูป tanθ₂ = D/h จึงได้ h = D/tanθ₂ ไม่ใช่ D·tanθ₂',
+  'speed-c-in-medium': 'ในแผ่นพลาสติก แสงวิ่งด้วย v = c/n ไม่ใช่ c',
+  'used-thickness': 'ระยะทางในแผ่นคือแนวเฉียง L = √(d² + x²) ไม่ใช่ความหนา d',
+  'dark-as-bright': 'นั่นคือตำแหน่งแถบสว่าง แถบมืดอยู่ที่ (m + ½)λL/d',
+  'bright-as-dark': 'นั่นคือตำแหน่งแถบมืด แถบสว่างอยู่ที่ mλL/d',
+  'dark-off-by-one': 'แถบมืดแรกคือ m = 0 ใน (m + ½) แถบมืดที่ k จึงอยู่ที่ (k − ½)λL/d',
+  'degrees-not-radians': 'มุม πdy/λL เป็นเรเดียน ตั้งเครื่องคิดเลขเป็นโหมด rad (หรือแปลงเป็นองศาก่อน)',
+  'cos-not-squared': 'ความเข้มคือ cos² ไม่ใช่ cos',
+  'used-phi-not-half': 'I = I_max cos²(φ/2): ในวงเล็บใช้ครึ่งหนึ่งของเฟส คือ πdy/λL ไม่ใช่ 2πdy/λL',
+  'mm-not-converted': 'แปลง mm เป็น m ก่อน: 1 mm = 10⁻³ m',
+  'gave-half-width': 'นั่นคือระยะถึงแถบมืดแรก ความกว้างแถบสว่างกลางคือสองเท่า 2λD/a',
+  'gave-full-width': 'นั่นคือความกว้างทั้งแถบสว่างกลาง (2λD/a) ตำแหน่งแถบมืดแรกคือ λD/a',
+  'no-1.22': 'ช่องกลมใช้ θ_R = 1.22λ/D (มี 1.22) ส่วน λ/a ใช้กับสลิต',
+  'lines-as-d': 'd คือระยะห่างระหว่างเส้น = ความยาว ÷ จำนวนเส้น',
+  'unpol-no-half': 'แสงไม่โพลาไรซ์ผ่านแผ่นแรกเหลือ ½ ก่อน แล้วค่อยใช้ cos² กับแผ่นถัดไป',
+  'angle-from-vertical': 'มุมในกฎของมาลุสคือมุมระหว่างแกนแผ่นนี้กับแกนแผ่นก่อนหน้า ไม่ใช่มุมกับแนวตั้ง',
+  'brewster-sin': 'กฎของบริวสเตอร์คือ n = tanθp (ใช้ tan ไม่ใช่ sin ซึ่งเป็นของมุมวิกฤต)',
+  'tan-for-critical': 'มุมวิกฤตใช้ sinθc = n₂/n₁ (ส่วน tan ใช้กับมุมบริวสเตอร์)',
+  'gave-new-x': 'นั่นคือระยะ x ใหม่ทั้งหมด โจทย์ถามว่า "เพิ่มขึ้น" เท่าใด ต้องลบค่าเดิมออก',
+  'lambda-L-swapped': 'สลับ L กับ d: แถบห่างกันมากขึ้นเมื่อฉากไกลขึ้น ระยะบนฉากจึงเป็น λL/d',
 };
 
 // ------------------------------------------------------------- helpers
@@ -358,4 +402,24 @@ export const U = {
     { label: 'μN', factor: 1e-6 },
   ],
   momentum: [{ label: 'kg·m/s', factor: 1 }],
+  // chapter 6
+  degree: [{ label: '°', factor: 1 }],
+  lengthSmall: [
+    { label: 'mm', factor: 1e-3 },
+    { label: 'm', factor: 1 },
+    { label: 'cm', factor: 1e-2 },
+    { label: 'μm', factor: 1e-6 },
+  ],
+  timeShort: [
+    { label: 'ps', factor: 1e-12 },
+    { label: 'ns', factor: 1e-9 },
+    { label: 's', factor: 1 },
+  ],
+  radian: [
+    { label: 'rad', factor: 1 },
+    { label: 'mrad', factor: 1e-3 },
+    { label: 'μrad', factor: 1e-6 },
+  ],
+  timesImax: [{ label: '× I_max', factor: 1 }],
+  timesI0: [{ label: '× I₀', factor: 1 }],
 } satisfies Record<string, UnitOpt[]>;

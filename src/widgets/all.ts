@@ -50,6 +50,13 @@ import { Spectrum } from './Spectrum';
 import { Intensity } from './Intensity';
 import { RadPressure } from './RadPressure';
 
+// ---- chapter 6: light
+import { Snell } from './Snell';
+import { DoubleSlit } from './DoubleSlit';
+import { SingleSlit } from './SingleSlit';
+import { Grating } from './Grating';
+import { Polarizers } from './Polarizers';
+
 widgets.pointField = { title: 'สนามของจุดประจุ', C: PointField };
 widgets.flux = { title: 'ฟลักซ์', C: FluxTilt };
 widgets.gauss = { title: 'กฎของเกาส์', C: GaussCharges };
@@ -84,3 +91,9 @@ widgets.ebDir = { title: 'ทิศของ B ในคลื่น EM (ข้�
 widgets.spectrum = { title: 'สเปกตรัม', C: Spectrum };
 widgets.intensity = { title: 'ความเข้มที่ระยะ r (ข้อ 29)', C: Intensity };
 widgets.radPressure = { title: 'ความดันรังสี', C: RadPressure };
+
+widgets.snell = { title: 'การหักเหและสะท้อนกลับหมด', C: Snell };
+widgets.doubleSlit = { title: 'สลิตคู่ (ข้อ 31–32)', C: DoubleSlit };
+widgets.singleSlit = { title: 'สลิตเดี่ยว', C: SingleSlit };
+widgets.grating = { title: 'เกรตติง', C: Grating };
+widgets.polarizers = { title: 'โพลารอยด์ (มาลุส)', C: Polarizers };
