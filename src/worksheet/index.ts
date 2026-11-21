@@ -2,7 +2,7 @@
 // The list of all 20 worksheet questions (21–40) for the
 // "ตัวอย่างข้อสอบ" tab, plus answer checking for one answer box.
 //
-// Built questions come from the chapter files (ch1to3.ts, …). The rest
+// Built questions come from the chapter files (ch1to3.ts, ch4.ts, …). The rest
 // are listed as `planned` so the checklist can show all 20 from day one.
 // When a chapter's questions are written: add them to `built` and delete
 // their lines from `planned`.
@@ -10,13 +10,13 @@
 import { checkAnswer, parseNumber } from '../physics/answers';
 import type { Verdict } from '../physics/answers';
 import { ch1to3Questions } from './ch1to3';
+import { ch4Questions } from './ch4';
 import type { PlannedQuestion, Question, ShuffledBox } from './types';
 
-export const built: Question[] = [...ch1to3Questions];
+export const built: Question[] = [...ch1to3Questions, ...ch4Questions];
 
 /** Not written yet. `chapter` is the expected chapter id; check it when the chapter is built. */
 export const planned: PlannedQuestion[] = [
-  { q: 28, chapter: 'faraday', title: 'วงจร RL: กระแสสูงสุด และกระแสหลังสับสวิตช์' },
   { q: 29, chapter: 'emwave', title: 'แหล่งกำเนิดคลื่น EM: ความเข้มและพลังงาน' },
   { q: 30, chapter: 'emwave', title: 'สมการสนามไฟฟ้าของคลื่น EM' },
   { q: 31, chapter: 'light', title: 'การแทรกสอดสองสลิต (ตัวแปร)' },

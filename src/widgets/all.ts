@@ -37,6 +37,12 @@ import { WiresInPage } from './WiresInPage';
 import { WiresEndOn } from './WiresEndOn';
 import { Solenoid } from './Solenoid';
 
+// ---- chapter 4: Faraday and inductance
+import { LenzMagnet } from './LenzMagnet';
+import { RailRod } from './RailRod';
+import { LoopRegion } from './LoopRegion';
+import { RLCircuit } from './RLCircuit';
+
 widgets.pointField = { title: 'สนามของจุดประจุ', C: PointField };
 widgets.flux = { title: 'ฟลักซ์', C: FluxTilt };
 widgets.gauss = { title: 'กฎของเกาส์', C: GaussCharges };
@@ -60,3 +66,8 @@ widgets.thickWire = { title: 'ลวดหนา', C: ThickWire };
 widgets.wiresInPage = { title: 'ลวดขนาน (สไลด์ 20)', C: WiresInPage };
 widgets.wiresEndOn = { title: 'ลวดแนวแกน z (ข้อ 27)', C: WiresEndOn };
 widgets.solenoid = { title: 'โซลีนอยด์', C: Solenoid };
+
+widgets.lenz = { title: 'กฎของเลนซ์', C: LenzMagnet };
+widgets.railRod = { title: 'แท่งบนราง', C: RailRod };
+widgets.loopRegion = { title: 'ขดลวดผ่านสนาม (สไลด์ 13)', C: LoopRegion };
+widgets.rl = { title: 'วงจร RL', C: RLCircuit };

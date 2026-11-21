@@ -5,6 +5,7 @@
 // page picks from this list (optionally filtered by chapter or skill).
 // =====================================================================
 import { electricGenerators } from './bankElectric';
+import { faradayGenerators } from './bankFaraday';
 import { magnetismGenerators } from './bankMagnetism';
 import { mulberry32, skillChapter, skillNames } from './common';
 import type { Generator, Problem, Skill } from './common';
@@ -35,9 +36,12 @@ const wsOf: Record<string, number> = {
   'q26-radius': 26,
   'q27-Bx': 27,
   'q27-By': 27,
+  'q28-imax': 28,
+  'q28-current': 28,
+  'rl-tau': 28,
 };
 
-export const generators: Generator[] = [...electricGenerators, ...magnetismGenerators].map((g) => ({
+export const generators: Generator[] = [...electricGenerators, ...magnetismGenerators, ...faradayGenerators].map((g) => ({
   ...g,
   ws: wsOf[g.id],
 }));
@@ -102,6 +106,21 @@ export const examSets: ExamSet[] = [
       ['solenoid', 'ampere-loop'],
       ['two-wires-page'],
       ['q27-Bx', 'q27-By'],
+    ],
+  },
+  {
+    id: 'ch4',
+    label: 'บทที่ 4 (แนวข้อ 28)',
+    chapters: ['faraday'],
+    minutes: 15,
+    slots: [
+      ['flux-angle', 'faraday-dB'],
+      ['motional-emf', 'rail-current', 'rail-force'],
+      ['loop-region-emf'],
+      ['rl-tau', 'q28-imax'],
+      ['q28-current'],
+      ['rl-decay', 'rl-VL'],
+      ['rl-time-fraction', 'rl-design-L'],
     ],
   },
 ];

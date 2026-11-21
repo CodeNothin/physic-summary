@@ -40,6 +40,18 @@ const glossary: [string, string][] = [
   ['รัศมีความโค้ง', 'radius of curvature'],
   ['ตั้งฉาก / ขนาน', 'perpendicular / parallel'],
   ['พุ่งออกจาก / พุ่งเข้ากระดาษ', 'out of / into the page'],
+  // chapter 4
+  ['ฟลักซ์แม่เหล็ก', 'magnetic flux'],
+  ['แรงเคลื่อนไฟฟ้าเหนี่ยวนำ', 'induced emf'],
+  ['กระแสเหนี่ยวนำ', 'induced current'],
+  ['ขดลวดเหนี่ยวนำ / ตัวเหนี่ยวนำ', 'inductor'],
+  ['ความเหนี่ยวนำ', 'inductance'],
+  ['การเหนี่ยวนำตัวเอง', 'self-induction'],
+  ['ค่าคงที่เวลา', 'time constant'],
+  ['ตัวต้านทาน', 'resistor'],
+  ['สับสวิตช์', 'close the switch'],
+  ['ต่ออนุกรม', 'connected in series'],
+  ['ตามเข็ม / ทวนเข็มนาฬิกา', 'clockwise / counter-clockwise'],
 ];
 
 /**
@@ -71,6 +83,14 @@ const sheetBlocks: { title: string; formulas: string[] }[] = [
       r`\vec F_B=q\vec v\times\vec B\qquad d\vec F_B=I\,d\vec s\times\vec B\qquad \vec F_B=I\vec\ell\times\vec B`,
       r`\vec B=\dfrac{\mu_0I}{4\pi}\int\dfrac{d\vec s\times\hat r}{r^2}\qquad \oint\vec B\cdot d\vec s=\mu_0I_{\text{enclosed}}`,
       r`\text{ลวดตรงยาวมาก: }B=\dfrac{\mu_0I}{2\pi a}\qquad \text{Solenoid: }B_{in}=\mu_0nI,\ B_{out}\approx0`,
+    ],
+  },
+  {
+    title: "Faraday's Law and Inductance",
+    formulas: [
+      r`\Phi_B=\int\vec B\cdot d\vec A\qquad \varepsilon=-\dfrac{d\Phi_B}{dt}\qquad |\varepsilon|=B\ell v`,
+      r`\varepsilon_L=-L\dfrac{dI}{dt}\qquad \tau=\dfrac{L}{R}`,
+      r`I(t)=\dfrac{\varepsilon}{R}\left(1-e^{-t/\tau}\right)\qquad I(t)=\dfrac{\varepsilon}{R}e^{-t/\tau}`,
     ],
   },
   {
@@ -126,6 +146,19 @@ const notOnSheet: { chapter: string; items: string[] }[] = [
       r`ทิศของ $\vec B$ รอบลวด: กฎมือขวา (หรือ ทิศกระแส × ทิศจากลวดไปยังจุด)`,
     ],
   },
+  {
+    chapter: 'บทที่ 4 ฟาราเดย์และความเหนี่ยวนำ',
+    items: [
+      r`สนามสม่ำเสมอ วงแบน: $\Phi_B=BA\cos\theta$ โดย $\theta$ วัดจากเวกเตอร์พื้นที่ (ตั้งฉากกับระนาบ)`,
+      r`กฎของเลนซ์: สนามเหนี่ยวนำต้าน **การเปลี่ยนแปลง** ของฟลักซ์ แล้วใช้กำมือขวาหาทิศกระแส`,
+      r`แท่งบนราง: $I=B\ell v/R$ และแรงต้าน $F_B=I\ell B=B^2\ell^2v/R$`,
+      r`ขดลวดผ่านบริเวณสนาม: มี emf เฉพาะตอนเข้าและออก ตอนอยู่ในสนามทั้งขด $\varepsilon=0$`,
+      r`กระแสสูงสุดในวงจร RL: $I_{max}=\varepsilon/R$ (ตัวเหนี่ยวนำไม่มีผลเมื่อกระแสคงที่)`,
+      r`ที่ $t=\tau$: ขาขึ้นได้ $0.63\,\varepsilon/R$ ขาลงเหลือ $0.37\,\varepsilon/R$`,
+      r`แรงดันขาขึ้น: $\Delta V_R=IR$, $\Delta V_L=\varepsilon-IR=\varepsilon e^{-t/\tau}$`,
+      r`หาเวลาจากกระแส: $t=-\tau\ln\left(1-I/I_{max}\right)$`,
+    ],
+  },
 ];
 
 export function CheatPage() {
@@ -159,7 +192,7 @@ export function CheatPage() {
       </section>
 
       <section className="card">
-        <h2>สูตรในชีท บทที่ 1–3</h2>
+        <h2>สูตรในชีท บทที่ 1–4</h2>
         {sheetBlocks.map((b) => (
           <div key={b.title}>
             <h3>{b.title}</h3>
@@ -201,6 +234,9 @@ export function CheatPage() {
           <Li>{r`**ประจุลบกลับทิศแรง** ใช้กฎมือขวากับ $\vec v\times\vec B$ ก่อน แล้วค่อยกลับทิศถ้า $q<0$`}</Li>
           <Li>{r`**โซลีนอยด์ใช้ $n$ ไม่ใช่ $N$** $n=N/\ell$ หน่วยรอบต่อเมตร`}</Li>
           <Li>{r`**ลวดหลายเส้นบวกแบบเวกเตอร์** หาทิศของแต่ละเส้นด้วยกฎกำมือขวาก่อน แล้วค่อยบวกหรือลบ`}</Li>
+          <Li>{r`**เลนซ์ต้าน “การเปลี่ยนแปลง” ไม่ใช่ต้าน $B$** ฟลักซ์ลด สนามเหนี่ยวนำชี้ทางเดียวกับ $B$ เดิม`}</Li>
+          <Li>{r`**$\tau=L/R$ ไม่ใช่ $R/L$** และแปลง mH, ms เป็น H, s ก่อนแทน`}</Li>
+          <Li>{r`**กระแสขาขึ้นหรือขาลง?** ต่อแบตเตอรี่ใช้ $1-e^{-t/\tau}$ ตัดแบตเตอรี่ใช้ $e^{-t/\tau}$`}</Li>
         </ol>
       </section>
 

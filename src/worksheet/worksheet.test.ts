@@ -53,6 +53,14 @@ describe('worksheet answer key (original numbers)', () => {
     near(num(27, 0), 1 / 3);
     near(num(27, 1), 1 / 2);
   });
+  it('Q28: I_max = 9.0/4.0 = 2.25 A (2.3); I(50 ms) = 1.4 A', () => {
+    near(num(28, 0), 2.25);
+    near(num(28, 1), 2.25 * (1 - Math.exp(-1)));
+    // the worksheet's rounded answers are accepted too
+    const b = boxes(28);
+    expect(checkBox(b[0], { text: '2.3', unitIdx: 0, choice: null }).kind).toBe('correct');
+    expect(checkBox(b[1], { text: '1.4', unitIdx: 0, choice: null }).kind).toBe('correct');
+  });
 });
 
 describe('worksheet list', () => {

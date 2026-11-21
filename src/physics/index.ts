@@ -333,3 +333,4 @@ export function twoSpheres(Qtotal: number, r1: number, r2: number): TwoSpheresRe
 
 // Chapter 3 lives in its own file; re-exported so callers can keep importing from './physics'.
 export * from './magnetism';
+export * from './faraday';

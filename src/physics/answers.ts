@@ -98,9 +98,16 @@ export interface KnownMistake {
 
 const TOL = 0.02;
 
+/**
+ * True when `given` matches `target`: within 2 %, OR exactly `target`
+ * rounded to 2 significant figures. The second rule is for answers
+ * like 2.25 → "2.3" (the worksheet rounds this way), which is 2.2 % off.
+ */
 function close(given: number, target: number, scale: number): boolean {
   if (target === 0) return Math.abs(given) <= 1e-9 * scale;
-  return Math.abs(given - target) <= TOL * Math.abs(target);
+  if (Math.abs(given - target) <= TOL * Math.abs(target)) return true;
+  const twoSig = Number(target.toPrecision(2));
+  return Math.abs(given - twoSig) <= 1e-9 * Math.abs(target);
 }
 
 /**

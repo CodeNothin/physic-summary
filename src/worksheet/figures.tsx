@@ -78,7 +78,45 @@ function Q27({ p }: { p: Props }) {
   );
 }
 
-const figures: Record<string, (x: { p: Props }) => ReactNode> = { q21: Q21, q22: Q22, q27: Q27 };
+/**
+ * Q28: series RL circuit as drawn in the worksheet: L and R along the
+ * top, battery E and switch S along the bottom. No numbers needed.
+ */
+function Q28() {
+  const y1 = 40; // top wire
+  const y2 = 120; // bottom wire
+  // inductor coil: a row of small half-circles
+  const coil = Array.from({ length: 5 }, () => `a7 7 0 0 1 14 0`).join(' ');
+  return (
+    <svg viewBox="0 0 220 150" className="stage pan-y" style={{ maxWidth: 260 }}>
+      {/* left and right sides */}
+      <line x1={30} y1={y1} x2={30} y2={y2} className="s-ink" strokeWidth={2} />
+      <line x1={190} y1={y1} x2={190} y2={y2} className="s-ink" strokeWidth={2} />
+      {/* top: wire, inductor, wire, resistor, wire */}
+      <path d={`M30 ${y1} L40 ${y1} ${coil} L110 ${y1}`} className="f-none s-ink" strokeWidth={2} />
+      <path
+        d={`M110 ${y1} L118 ${y1} ${[...Array(6)].map((_, i) => `L${122 + i * 8} ${y1 + (i % 2 ? 7 : -7)}`).join(' ')} L170 ${y1} L190 ${y1}`}
+        className="f-none s-ink"
+        strokeWidth={2}
+      />
+      <text x={75} y={y1 - 14} textAnchor="middle" className="small" style={{ fontWeight: 700 }}>L</text>
+      <text x={142} y={y1 - 14} textAnchor="middle" className="small" style={{ fontWeight: 700 }}>R</text>
+      {/* bottom: battery (long + short plate) then the open switch */}
+      <line x1={30} y1={y2} x2={70} y2={y2} className="s-ink" strokeWidth={2} />
+      <line x1={70} y1={y2 - 14} x2={70} y2={y2 + 14} className="s-ink" strokeWidth={2} />
+      <line x1={78} y1={y2 - 7} x2={78} y2={y2 + 7} className="s-ink" strokeWidth={4} />
+      <line x1={78} y1={y2} x2={130} y2={y2} className="s-ink" strokeWidth={2} />
+      <text x={74} y={y2 + 30} textAnchor="middle" className="small" style={{ fontWeight: 700 }}>E</text>
+      <circle cx={130} cy={y2} r={3} className="f-ink" />
+      <line x1={130} y1={y2} x2={158} y2={y2 - 16} className="s-ink" strokeWidth={2} />
+      <circle cx={162} cy={y2} r={3} className="f-ink" />
+      <line x1={162} y1={y2} x2={190} y2={y2} className="s-ink" strokeWidth={2} />
+      <text x={148} y={y2 + 22} textAnchor="middle" className="small" style={{ fontWeight: 700 }}>S</text>
+    </svg>
+  );
+}
+
+const figures: Record<string, (x: { p: Props }) => ReactNode> = { q21: Q21, q22: Q22, q27: Q27, q28: Q28 };
 
 export function Figure({ id, props }: { id: string; props: Props }) {
   const F = figures[id];

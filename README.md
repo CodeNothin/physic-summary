@@ -131,6 +131,7 @@ src/
     GaussPage.tsx          chapter 1
     PotentialPage.tsx      chapter 2
     MagnetismPage.tsx      chapter 3 (the best template to copy)
+    FaradayPage.tsx        chapter 4
     CheatPage.tsx          the สูตร tab
 
   components/
@@ -144,14 +145,17 @@ src/
   physics/
     index.ts               chapters 1–2 (k = 9.0e9, ε0 = 8.85e-12); re-exports magnetism.ts
     magnetism.ts           chapter 3 (μ0 = 4π×10⁻⁷, e = 1.60e-19)
-    answers.ts             parse a typed number, check it (2 %, sign, ×10ⁿ, known slips)
+    faraday.ts             chapter 4 (flux, Lenz, Bℓv, RL circuits; flux into the page = +)
+    answers.ts             parse a typed number, check it (2 % or exact 2-sig-fig rounding, sign, ×10ⁿ, known slips)
     physics.test.ts        chapters 1–2 tests (worksheet Q21–25 + lecture examples)
     magnetism.test.ts      chapter 3 tests (Q26–27, slide examples, numeric cross-checks)
+    faraday.test.ts        chapter 4 tests (Q28, slides 10–13, 24, 27–30)
 
   practice/                the ฝึกโจทย์(สั้น) tab
     common.ts              types, skill list, feedback sentences, random helpers, unit lists
     bankElectric.ts        short-question generators, chapters 1–2
     bankMagnetism.ts       short-question generators, chapter 3
+    bankFaraday.ts         short-question generators, chapter 4
     questions.ts           joins the banks; links pieces to worksheet Qs; timed sets
     PracticePage.tsx       menu, drill screen, timed set screen
     questions.test.ts      runs every generator 200 times
@@ -159,8 +163,9 @@ src/
   worksheet/               the ตัวอย่างข้อสอบ tab
     types.ts               the question format and defineQuestion()
     ch1to3.ts              worksheet Q21–27
+    ch4.ts                 worksheet Q28
     index.ts               all 20 questions (built + planned), checkBox()
-    figures.tsx            the "ดังรูป" figures (Q21, Q22, Q27)
+    figures.tsx            the "ดังรูป" figures (Q21, Q22, Q27, Q28)
     ExamPage.tsx           list, one-question screen, mock exam
     worksheet.test.ts      answer-key tests + 300 random seeds per question
 
@@ -241,7 +246,7 @@ function that decides when it is highlighted.
 }
 ```
 
-Chapters 4–9 are already listed with `status: 'soon'`.
+Chapters 5–9 are already listed with `status: 'soon'`.
 
 ### 5.3 Chapter pages and the text building blocks
 
@@ -434,8 +439,8 @@ strings are written `String.raw`…``; it is the same as `r`…`` from `componen
 
 The exam takes **6 of the 20 worksheet questions** with new numbers. This tab therefore
 keeps each question exactly as written, with all its parts (ก, ข, …), and only changes the
-numbers. Q21–27 are built. Q28–40 are listed in `planned` in `worksheet/index.ts` and get
-built along with chapters 4–9.
+numbers. Q21–28 are built. Q29–40 are listed in `planned` in `worksheet/index.ts` and get
+built along with chapters 5–9.
 
 A question is written with `defineQuestion` (see `worksheet/types.ts` and `ch1to3.ts`):
 
@@ -498,7 +503,8 @@ for minus.
 
 `checkAnswer(given, expected, mistakes, scale)` returns the first of these that fits:
 
-1. **correct**: within 2% (an exact 0 uses `scale` as the yardstick)
+1. **correct**: within 2%, or exactly the answer rounded to 2 significant figures
+   (so the worksheet's 2.3 for 2.25 counts; an exact 0 uses `scale` as the yardstick)
 2. **mistake**: matches one of the problem's known slips → its Thai sentence
 3. **sign**: right size, wrong sign
 4. **power10**: right digits, off by 10ⁿ (unit-conversion slip)
@@ -693,6 +699,10 @@ than one way. The answers are the same either way; only the presentation may cha
 - **Finite straight wire (slides 13–15):** written as B = μ₀I/4πa · (sin θ₁ + sin θ₂) with
   both angles positive. Files: `src/physics/magnetism.ts` (`finiteWireField`),
   `src/pages/MagnetismPage.tsx`, `src/practice/bankMagnetism.ts`.
+- **Sign of ε for the loop passing through a field (chapter 4, slide 13):** flux into the
+  page is counted positive, so ε = −Bℓv while entering and +Bℓv while leaving. The
+  slides leave the graph blank; if the professor counts the other way, flip the sign in
+  `loopRegionEmf` (`src/physics/faraday.ts`). Practice asks only for the size.
 
 **Scope notes**
 

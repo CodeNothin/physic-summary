@@ -5,6 +5,7 @@
 //   common.ts         (this file) types, skill list, feedback texts, helpers
 //   bankElectric.ts   question generators for chapters 1–2
 //   bankMagnetism.ts  question generators for chapter 3
+//   bankFaraday.ts    question generators for chapter 4
 //   questions.ts      joins them, and defines the timed exam sets
 //
 // A "generator" is a recipe that, given a random-number source, makes
@@ -36,7 +37,11 @@ export type Skill =
   | 'wireForce'
   | 'biotSavart'
   | 'ampere'
-  | 'superpose';
+  | 'superpose'
+  // chapter 4
+  | 'faradayFlux'
+  | 'motional'
+  | 'rl';
 
 export const skillNames: Record<Skill, string> = {
   flux: 'ฟลักซ์และกฎของเกาส์',
@@ -53,6 +58,9 @@ export const skillNames: Record<Skill, string> = {
   biotSavart: 'บิโอต์–ซาวาร์ต · ลวดตรง',
   ampere: 'กฎของแอมแปร์ · ลวดหนา · โซลีนอยด์',
   superpose: 'รวมสนามจากลวดหลายเส้น (ข้อ 27)',
+  faradayFlux: 'ฟลักซ์แม่เหล็ก · กฎของฟาราเดย์',
+  motional: 'emf จากการเคลื่อนที่ Bℓv · ขดลวดผ่านสนาม',
+  rl: 'วงจร RL (ข้อ 28)',
 };
 
 /** Which chapter (by id in src/chapters.ts) each skill belongs to. */
@@ -71,6 +79,9 @@ export const skillChapter: Record<Skill, string> = {
   biotSavart: 'magnetism',
   ampere: 'magnetism',
   superpose: 'magnetism',
+  faradayFlux: 'faraday',
+  motional: 'faraday',
+  rl: 'faraday',
 };
 
 // ------------------------------------------------------------ types
@@ -165,6 +176,18 @@ export const mistakeText: Record<string, string> = {
   'subtracted-not-added': 'สนามจากสองเส้นในบริเวณนี้ชี้ทางเดียวกัน ต้องบวกกัน',
   'outside-current': 'กระแสที่อยู่นอกวงไม่นับ นับเฉพาะกระแสที่ทะลุวง',
   'current-sign': 'กระแสที่พุ่งเข้ากระดาษ (⊗) นับเป็นลบเมื่อเดินวงทวนเข็มนาฬิกา',
+  // chapter 4
+  'angle-to-plane': 'มุมที่ให้วัดจากระนาบของขด แต่ θ ใน Φ = BA cos θ วัดจากเวกเตอร์พื้นที่ (ตั้งฉากกับระนาบ) จึงต้องใช้ 90° − มุมนั้น',
+  'flux-not-change': 'ε ขึ้นกับการเปลี่ยนแปลงของฟลักซ์ ΔΦ = Φ_หลัง − Φ_ก่อน ไม่ใช่ฟลักซ์ค่าสุดท้าย',
+  'area-cm2': 'แปลงพื้นที่เป็น m² ก่อน: 1 cm² = 10⁻⁴ m²',
+  'emf-while-inside': 'ตอนขดลวดอยู่ในสนามทั้งขด ฟลักซ์คงที่ จึงได้ ε = 0 (emf เกิดเฉพาะตอนเข้าหรือออก)',
+  'gave-current': 'นั่นคือกระแส I = Bℓv/R ยังต้องคูณ ℓB เพื่อได้แรง F = IℓB',
+  'rl-tau-inverted': 'ค่าคงที่เวลาคือ τ = L/R ไม่ใช่ R/L',
+  'rl-decay-for-rise': 'กระแสกำลังเพิ่มขึ้นจาก 0 ต้องใช้ (ε/R)(1 − e^(−t/τ)) ไม่ใช่ (ε/R)e^(−t/τ)',
+  'rl-rise-for-decay': 'กระแสกำลังลดลงจาก ε/R ต้องใช้ (ε/R)e^(−t/τ) ไม่ใช่ (ε/R)(1 − e^(−t/τ))',
+  'rl-VR-for-VL': 'นั่นคือแรงดันคร่อม R (= IR) แรงดันคร่อม L คือ ε − IR = εe^(−t/τ)',
+  'mH-not-converted': 'แปลง mH เป็น H ก่อน: 1 mH = 10⁻³ H',
+  'rl-ln-sign': 'จาก f = 1 − e^(−t/τ) ได้ t = −τ ln(1 − f) ไม่ใช่ −τ ln f',
 };
 
 // ------------------------------------------------------------- helpers
@@ -253,4 +276,26 @@ export const U = {
   speed: [{ label: 'm/s', factor: 1 }],
   teslaMetre: [{ label: 'T·m', factor: 1 }],
   timesMu0I2pi: [{ label: '× μ₀I/2π', factor: 1 }],
+  // chapter 4
+  weber: [
+    { label: 'Wb', factor: 1 },
+    { label: 'mWb', factor: 1e-3 },
+  ],
+  emf: [
+    { label: 'V', factor: 1 },
+    { label: 'mV', factor: 1e-3 },
+  ],
+  current: [
+    { label: 'A', factor: 1 },
+    { label: 'mA', factor: 1e-3 },
+  ],
+  time: [
+    { label: 's', factor: 1 },
+    { label: 'ms', factor: 1e-3 },
+    { label: 'μs', factor: 1e-6 },
+  ],
+  henry: [
+    { label: 'H', factor: 1 },
+    { label: 'mH', factor: 1e-3 },
+  ],
 } satisfies Record<string, UnitOpt[]>;
