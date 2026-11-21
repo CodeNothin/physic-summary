@@ -37,18 +37,22 @@ export const M = memo(function M({ children }: { children: string }) {
   return <div className="math-block" dangerouslySetInnerHTML={{ __html: render(src, true) }} />;
 });
 
-/** Text with inline $math$ and **bold**. */
+/** Text with inline $math$ and **bold** (bold text may itself contain $math$). */
 export function T({ children }: { children: string }) {
-  // Split the text into pieces: "$...$" (math), "**...**" (bold), and plain text.
+  // Split the text into pieces: "**...**" (bold), "$...$" (math), and plain text.
+  // Bold is matched first so that "**$E=0$ ทุกจุด**" stays one bold piece; its
+  // inside is then rendered by T again, so the math in it still becomes KaTeX.
   // The brackets in the pattern keep the matched pieces in the result.
-  const bits = children.split(/(\$[^$]+\$|\*\*[^*]+\*\*)/g);
+  const bits = children.split(/(\*\*[^*]+\*\*|\$[^$]+\$)/g);
   return (
     <>
       {bits.map((b, i) =>
         b.startsWith('$') && b.endsWith('$') && b.length > 1 ? (
           <Tex key={i}>{b.slice(1, -1)}</Tex>
-        ) : b.startsWith('**') ? (
-          <b key={i}>{b.slice(2, -2)}</b>
+        ) : b.startsWith('**') && b.endsWith('**') && b.length > 4 ? (
+          <b key={i}>
+            <T>{b.slice(2, -2)}</T>
+          </b>
         ) : (
           <Fragment key={i}>{b}</Fragment>
         ),

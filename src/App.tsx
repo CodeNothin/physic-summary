@@ -61,6 +61,39 @@ function Chips({ page, items }: { page: string; items: SectionInfo[] }) {
   );
 }
 
+/**
+ * The card at the end of every chapter page: practise this chapter, and
+ * move to the previous or next ready chapter (so the บทเรียน tab is not a
+ * dead end that needs a trip back to หน้าแรก).
+ */
+function ChapterFooter({ id }: { id: string }) {
+  const i = readyChapters.findIndex((c) => c.id === id);
+  const prev = readyChapters[i - 1];
+  const next = readyChapters[i + 1];
+  return (
+    <section className="card">
+      <h3 style={{ marginTop: 0 }}>จบบทนี้แล้ว</h3>
+      <div className="btn-row">
+        <a className="btn" href={`#/practice/${id}`}>
+          ✏️ ฝึกโจทย์สั้นบทนี้
+        </a>
+      </div>
+      <div className="btn-row" style={{ marginTop: 8 }}>
+        {prev && (
+          <a className="btn ghost" href={`#/${prev.id}`}>
+            ← บทที่ {prev.num}
+          </a>
+        )}
+        {next && (
+          <a className="btn ghost" href={`#/${next.id}`}>
+            บทที่ {next.num} →
+          </a>
+        )}
+      </div>
+    </section>
+  );
+}
+
 export function App() {
   let [page = '', sub] = useRoute();
   const store = useStore();
@@ -96,6 +129,7 @@ export function App() {
         </p>
         <Chips page={chapter.id} items={chapter.sections} />
         <chapter.Page />
+        <ChapterFooter id={chapter.id} />
       </>
     );
   } else if (page === 'practice') body = <PracticePage key={sub ?? ''} sub={sub} />;

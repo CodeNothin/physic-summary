@@ -101,7 +101,7 @@ export function HomePage() {
           </a>
         </div>
         <p className="note">
-          แปลง μC เป็น <Tex>{r`10^{-6}`}</Tex> C, cm เป็น m และ MeV เป็น J (<Tex>{r`	imes1.60	imes10^{-19}	imes10^{6}`}</Tex>)
+          แปลง μC เป็น <Tex>{r`10^{-6}`}</Tex> C, cm เป็น m และ MeV เป็น J (<Tex>{r`1\ \mathrm{MeV}=10^{6}\times1.60\times10^{-19}\ \mathrm J`}</Tex>)
           ก่อนแทนค่าเสมอ
         </p>
       </section>

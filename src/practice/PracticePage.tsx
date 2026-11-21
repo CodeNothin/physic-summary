@@ -346,10 +346,11 @@ function Exam({ set, onExit }: { set: ExamSet; onExit: () => void }) {
         </section>
         {problems.map((p, k) => {
           const ok = results[k].kind === 'correct';
+          const blank = answers[k].text.trim() === '';
           return (
             <section className="card" key={k}>
               <span className="tag-pill">
-                ข้อ {k + 1} · {ok ? '✓ ถูก' : '✗ ผิด'}
+                ข้อ {k + 1} · {ok ? '✓ ถูก' : blank ? '— ไม่ได้ตอบ' : '✗ ผิด'}
               </span>
               <p style={{ marginTop: 8 }}>
                 <T>{p.prompt}</T>
@@ -399,7 +400,14 @@ function Exam({ set, onExit }: { set: ExamSet; onExit: () => void }) {
             ถัดไป →
           </button>
         ) : (
-          <button className="btn" onClick={finish}>
+          <button
+            className="btn"
+            onClick={() => {
+              // warn before submitting with blank answers (easy to miss on a phone)
+              const blank = answers.filter((a) => a.text.trim() === '').length;
+              if (blank === 0 || confirm(`ยังไม่ได้ตอบ ${blank} ข้อ ส่งคำตอบเลยไหม?`)) finish();
+            }}
+          >
             ส่งคำตอบ
           </button>
         )}
@@ -442,8 +450,9 @@ export function PracticePage({ sub }: { sub?: string }) {
     setMode({ kind: 'menu' });
     if (sub) window.location.hash = '#/practice'; // leave #/practice/ws25 so a reload shows the menu
   };
-  // chapter filter for the menu: 'all' or a chapter id from src/chapters.ts
-  const [chapter, setChapter] = useState('all');
+  // chapter filter for the menu: 'all' or a chapter id from src/chapters.ts.
+  // A URL like #/practice/emwave (the "ฝึกโจทย์สั้นบทนี้" button) starts on that chapter.
+  const [chapter, setChapter] = useState(() => (readyChapters.some((c) => c.id === sub) ? sub! : 'all'));
 
   if (mode.kind === 'drill') {
     return <Drill key={mode.label} pool={mode.pool} label={mode.label} onExit={toMenu} />;
@@ -466,7 +475,7 @@ export function PracticePage({ sub }: { sub?: string }) {
         <p>
           โจทย์สั้นทีละขั้น ตัดมาจากแบบฝึกหัดและตัวอย่างในสไลด์ ตัวเลขสุ่มใหม่ทุกครั้ง (โจทย์เต็มแบบข้อสอบอยู่ในแท็บ{' '}
           <a href="#/exam">ตัวอย่างข้อสอบ</a>) ใช้{' '}
-          <T>{String.raw`$k=9.0\times10^{9}$, $\varepsilon_0=8.85\times10^{-12}$ และ $\mu_0=4\pi\times10^{-7}$`}</T> คำตอบคลาดได้ไม่เกิน 2%
+          <T>{String.raw`$k=9.0\times10^{9}$, $\varepsilon_0=8.85\times10^{-12}$, $\mu_0=4\pi\times10^{-7}$ และ $c=3\times10^{8}$ m/s`}</T> คำตอบคลาดได้ไม่เกิน 2%
         </p>
         <nav className="chips" aria-label="เลือกบท">
           {chapterChips.map((c) => (

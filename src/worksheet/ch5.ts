@@ -11,7 +11,9 @@ import { defineQuestion } from './types';
 import type { Question } from './types';
 
 /** "2.0\times10^{6}" — mantissa with one decimal and a power of ten. */
-const sci = (m: number, e: number) => String.raw`${m.toFixed(1)}\times10^{${e}}`;
+const sci = (m: number, e: number) =>
+  // keep proper scientific form: 0.8×10⁷ is printed as 8.0×10⁶
+  m < 1 ? String.raw`${(m * 10).toFixed(1)}\times10^{${e - 1}}` : String.raw`${m.toFixed(1)}\times10^{${e}}`;
 
 /** Unit vector → TeX with an explicit sign, e.g. (0,1,0) → "+\hat y". */
 function hatTex(v: Vec3): string {

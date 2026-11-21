@@ -14,7 +14,9 @@ import { E0_TEX, MU0_TEX, U, int, pick } from './common';
 import type { Generator, Rng } from './common';
 
 /** "2.0\times10^{6}" — a mantissa with one decimal and a power of ten, for prompts. */
-const sci = (m: number, e: number) => String.raw`${m.toFixed(1)}\times10^{${e}}`;
+const sci = (m: number, e: number) =>
+  // keep proper scientific form: 0.8×10⁷ is printed as 8.0×10⁶
+  m < 1 ? String.raw`${(m * 10).toFixed(1)}\times10^{${e - 1}}` : String.raw`${m.toFixed(1)}\times10^{${e}}`;
 
 /** A wave number k = m×10^e m⁻¹ that gives visible-ish light (λ between ~300 and ~900 nm). */
 function pickK(rng: Rng) {

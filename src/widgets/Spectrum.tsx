@@ -23,9 +23,9 @@ const xOf = (f: number) => X0 + (BAR * (Math.log10(f) - LO)) / (HI - LO);
 const colour: Record<string, string> = {
   radio: 'var(--muted)',
   microwave: 'var(--metal)',
-  infrared: 'var(--neg)',
+  infrared: 'var(--pos)', // red side, below visible red
   visible: 'url(#rainbow)',
-  ultraviolet: 'var(--bfield)',
+  ultraviolet: '#7a4fd0', // violet side, above visible violet
   'X-ray': 'var(--accent)',
   'gamma ray': 'var(--ink)',
 };
